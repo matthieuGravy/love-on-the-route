@@ -1,3 +1,4 @@
 # panicMode
 
-panicMode is a lightweight framework under construction, designed to facilitate the development of static sites. It allows you to load Tailwind CSS and DaisyUI components, while avoiding the complexity of heavy frameworks like React, particularly for small projects.
+panicMode is a small package currently under development, designed to simplify the creation of static sites. It allows for easy loading of Tailwind CSS and DaisyUI components, while avoiding the complexity of heavier frameworks like React, which can be particularly useful for small projects.
+This project aims to provide a lightweight and accessible solution, ideal for those who want to focus on development without getting lost in complicated configurations.
