@@ -1,4 +1,9 @@
 import "./style.css";
+
+import * as Components from "./components/index";
+
+export default Components;
+
 import { Router } from "./router/Router";
 import { PanicHeader } from "./components/PanicHeader";
 import { home } from "./views/home";
