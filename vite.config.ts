@@ -18,7 +18,7 @@ export default defineConfig({
         globals: {},
         assetFileNames: (assetInfo) => {
           if (assetInfo.name === "style.css") return "panicmode.css";
-          return assetInfo.name;
+          return assetInfo.name || "unknown";
         },
       },
     },
