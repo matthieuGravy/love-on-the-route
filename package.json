@@ -1,6 +1,6 @@
 {
   "name": "panicmode",
-  "version": "0.5.0",
+  "version": "0.2.1",
   "type": "module",
   "main": "dist/panicmode.umd.js",
   "module": "dist/panicmode.es.js",
@@ -15,7 +15,7 @@
       "require": "./dist/panicmode.umd.js",
       "types": "./dist/index.d.ts"
     },
-    "./style.css": "./dist/panicmode.css"
+    "./dist/panicmode.css": "./dist/panicmode.css"
   },
   "scripts": {
     "dev": "vite",
