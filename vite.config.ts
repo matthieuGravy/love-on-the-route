@@ -1,8 +1,12 @@
 import { defineConfig } from "vite";
-import { resolve } from "path";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 import dts from "vite-plugin-dts";
 import tailwindcss from "tailwindcss";
 import autoprefixer from "autoprefixer";
+
+// Convertir import.meta.url en __dirname
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   build: {
@@ -26,13 +30,5 @@ export default defineConfig({
     modules: {
       localsConvention: "camelCaseOnly",
     },
-  },
-  // Ajout de la configuration pour le développement
-  optimizeDeps: {
-    include: [], // Vous pouvez ajouter des dépendances spécifiques ici si nécessaire
-  },
-  // Spécifiez un fichier HTML pour le développement
-  server: {
-    open: "/index.html",
   },
 });

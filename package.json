@@ -13,7 +13,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "build:lib": "vite build",
-    "prepublishOnly": "pnpm run build:lib"
+    "prepublishOnly": "pnpm run build:lib",
+    "update:deps": "pnpm update"
   },
   "peerDependencies": {
     "tailwindcss": "^3.4.10"
@@ -21,11 +22,11 @@
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.10",
-    "postcss": "^8.4.45",
-    "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.3",
-    "vite": "^5.4.1",
-    "vite-plugin-dts": "^3.0.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.12",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.6",
+    "vite-plugin-dts": "^3.9.1",
     "vite-tsconfig-paths": "^5.0.1"
   },
   "repository": {
