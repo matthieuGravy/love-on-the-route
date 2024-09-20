@@ -2,10 +2,7 @@ import { defineConfig } from "vite";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import dts from "vite-plugin-dts";
-import tailwindcss from "tailwindcss";
-import autoprefixer from "autoprefixer";
 
-// Convertir import.meta.url en __dirname
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
@@ -19,16 +16,13 @@ export default defineConfig({
       external: [],
       output: {
         globals: {},
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === "style.css") return "panicmode.css";
+          return assetInfo.name;
+        },
       },
     },
+    cssCodeSplit: false,
   },
   plugins: [dts()],
-  css: {
-    postcss: {
-      plugins: [tailwindcss, autoprefixer],
-    },
-    modules: {
-      localsConvention: "camelCaseOnly",
-    },
-  },
 });

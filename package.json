@@ -5,9 +5,18 @@
   "main": "dist/panicmode.umd.js",
   "module": "dist/panicmode.es.js",
   "types": "dist/index.d.ts",
+  "style": "dist/panicmode.css",
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/panicmode.es.js",
+      "require": "./dist/panicmode.umd.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./style.css": "./dist/panicmode.css"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -42,6 +51,7 @@
   "author": "Matthieu Gravy",
   "license": "MIT",
   "dependencies": {
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "url": "^0.11.4"
   }
 }
