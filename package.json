@@ -33,7 +33,14 @@
     "url": "https://github.com/matthieuGravy/panicmode"
   },
   "homepage": "https://github.com/matthieuGravy/panicmode/blob/main/README.MD",
-  "keywords": ["typescript", "ui-components", "tailwindcss"],
+  "keywords": [
+    "typescript",
+    "ui-components",
+    "tailwindcss"
+  ],
   "author": "Matthieu Gravy",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "path": "^0.12.7"
+  }
 }

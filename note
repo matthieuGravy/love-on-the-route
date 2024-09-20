@@ -24,3 +24,5 @@ router.addRoute("/about", () => {
 
 // Render the router
 router.render();
+
+

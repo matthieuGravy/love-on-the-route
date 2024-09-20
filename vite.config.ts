@@ -12,9 +12,7 @@ export default defineConfig({
       fileName: (format) => `panicmode.${format}.js`,
     },
     rollupOptions: {
-      external: [
-        // Ajoutez ici les dépendances externes si nécessaire
-      ],
+      external: [],
       output: {
         globals: {},
       },
