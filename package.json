@@ -1,12 +1,17 @@
 {
   "name": "panicmode",
-  "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "dist/panicmode.umd.js",
+  "module": "dist/panicmode.es.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build": "vite build",
+    "preview": "vite preview",
+    "build:lib": "vite build"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
@@ -15,6 +20,12 @@
     "tailwindcss": "^3.4.10",
     "typescript": "^5.5.3",
     "vite": "^5.4.1",
+    "vite-plugin-dts": "^3.0.0",
     "vite-tsconfig-paths": "^5.0.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matthieuGravy/panicmode"
+  },
+  "homepage": "https://github.com/matthieuGravy/panicmode/blob/main/README.MD"
 }

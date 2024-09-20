@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "outDir": "./dist",
+      "declaration": true,
+      "declarationMap": true,
+      "sourceMap": true,
+      "noEmit": false,
+      "module": "ESNext",
+      "moduleResolution": "node",
+      "allowImportingTsExtensions": false
+    },
+    "exclude": ["**/*.test.ts", "**/*.spec.ts"]
+  }
