@@ -1,9 +1,10 @@
 {
   "name": "panicmode",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "main": "dist/panicmode.umd.js",
   "module": "dist/panicmode.es.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -11,7 +12,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "build:lib": "vite build"
+    "build:lib": "vite build",
+    "prepublishOnly": "pnpm run build:lib"
+  },
+  "peerDependencies": {
+    "tailwindcss": "^3.4.10"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
@@ -27,5 +32,8 @@
     "type": "git",
     "url": "https://github.com/matthieuGravy/panicmode"
   },
-  "homepage": "https://github.com/matthieuGravy/panicmode/blob/main/README.MD"
+  "homepage": "https://github.com/matthieuGravy/panicmode/blob/main/README.MD",
+  "keywords": ["typescript", "ui-components", "tailwindcss"],
+  "author": "Matthieu Gravy",
+  "license": "MIT"
 }
