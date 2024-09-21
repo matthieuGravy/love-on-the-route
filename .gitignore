@@ -44,3 +44,7 @@ dist-ssr/
 .cache/
 coverage/
 .env
+
+
+# Ignore the tempalte local folder
+template-local/
