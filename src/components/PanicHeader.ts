@@ -7,7 +7,7 @@ export class PanicHeader {
   ) {
     console.log("PanicHeader: Initializing with title:", title);
     this.element = document.createElement("header");
-    this.element.classList.add("flex", "bg-base-100", "navbar");
+    this.element.classList.add("navbar", "bg-base-200");
     this.updateContent();
   }
 
@@ -18,12 +18,27 @@ export class PanicHeader {
       .join("");
 
     this.element.innerHTML = `
-      <h1 class="ps-4 flex-1">${this.title}</h1>
-      <nav class="pe-4 flex-1 flex justify-end">
-        <ul class="grid grid-cols-${this.links.length} gap-4">
+      <div class="navbar-start">
+        <div class="dropdown lg:hidden">
+          <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+            </svg>
+          </div>
+          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+            ${linksHtml}
+          </ul>
+        </div>
+        <h1 class="btn btn-ghost normal-case text-xl lg:flex">${this.title}</h1>
+      </div>
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
           ${linksHtml}
         </ul>
-      </nav>
+      </div>
+      <div class="navbar-end">
+        <!-- You can add additional elements here if needed -->
+      </div>
     `;
     console.log(
       "PanicHeader: Content updated. New innerHTML:",
