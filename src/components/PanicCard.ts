@@ -16,7 +16,7 @@ export class PanicCard {
     this.element = document.createElement("div");
     this.element.classList.add("card");
     this.element.innerHTML = `
-      <article class="card bg-base-100 w-96 shadow-xl">
+      <article class="card bg-base-100 w-72 lg:w-96 shadow-xl">
         <figure>
           <img src="${src}" alt="${alt}" />
         </figure>
