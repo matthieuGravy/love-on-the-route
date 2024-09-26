@@ -102,5 +102,7 @@ router.addRoute(
 router.render();
 ```
 
+## Contributing
 
+We welcome contributions to PanicMode! Please see our [Contributing Guide](CONTRIBUTE.md) for more details on how to get started.
 
