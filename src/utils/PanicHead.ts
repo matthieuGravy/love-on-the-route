@@ -3,26 +3,46 @@ export function updateHead(
   metaDescription: string,
   faviconUrl: string
 ) {
-  // update title
+  // Update title
   document.title = title;
 
-  // update meta description
-  let metaDescriptionElement = document.querySelector(
-    'meta[name="description"]'
-  );
-  if (!metaDescriptionElement) {
-    metaDescriptionElement = document.createElement("meta");
-    metaDescriptionElement.setAttribute("name", "description");
-    document.head.appendChild(metaDescriptionElement);
-  }
-  metaDescriptionElement.setAttribute("content", metaDescription);
+  // Update meta description
+  updateMetaTag("description", metaDescription);
 
-  // update favicon
-  let faviconElement = document.querySelector('link[rel="icon"]');
-  if (!faviconElement) {
-    faviconElement = document.createElement("link");
-    faviconElement.setAttribute("rel", "icon");
-    document.head.appendChild(faviconElement);
+  // Update favicon
+  updateLinkTag("icon", faviconUrl);
+
+  // Update Open Graph metadata
+  updateMetaTag("og:title", title);
+  updateMetaTag("og:description", metaDescription);
+  updateMetaTag("og:url", window.location.href);
+
+  // Update Twitter Card metadata
+  updateMetaTag("twitter:title", title);
+  updateMetaTag("twitter:description", metaDescription);
+
+  // Update canonical URL
+  updateLinkTag("canonical", window.location.href);
+}
+
+function updateMetaTag(name: string, content: string) {
+  let metaTag = document.querySelector(
+    `meta[name="${name}"]`
+  ) as HTMLMetaElement;
+  if (!metaTag) {
+    metaTag = document.createElement("meta");
+    metaTag.name = name;
+    document.head.appendChild(metaTag);
   }
-  faviconElement.setAttribute("href", faviconUrl);
+  metaTag.content = content;
+}
+
+function updateLinkTag(rel: string, href: string) {
+  let linkTag = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement;
+  if (!linkTag) {
+    linkTag = document.createElement("link");
+    linkTag.rel = rel;
+    document.head.appendChild(linkTag);
+  }
+  linkTag.href = href;
 }
