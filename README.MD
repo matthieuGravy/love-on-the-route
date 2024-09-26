@@ -1,4 +1,4 @@
-# PanicMode
+# 🚨 PanicMode
 
 ![npm version](https://img.shields.io/npm/v/panicmode.svg)
 ![npm downloads](https://img.shields.io/npm/dt/panicmode.svg)
@@ -6,22 +6,22 @@
 
 **PanicMode** is a lightweight package designed to simplify the creation of static sites. It provides easy integration of Tailwind CSS and DaisyUI components without the complexity of heavier frameworks like React. Ideal for small projects and rapid prototyping, PanicMode offers a developer-friendly solution for those who want to focus on building rather than configuring.
 
-## Useful Links
+## 🔗 Useful Links
 
-- [npm - panicmode](https://www.npmjs.com/package/panicmode)
-- [GitHub - panicmode](https://github.com/matthieuGravy/panicmode)
-- [GitHub - Documentation (Coming Soon)](https://github.com/matthieuGravy/panicmode-doc)
-- [Live Demo](https://panicmode-example.vercel.app/)
+- 📦 [npm - panicmode](https://www.npmjs.com/package/panicmode)
+- 🐙 [GitHub - panicmode](https://github.com/matthieuGravy/panicmode)
+- 📚 [Documentation (Coming Soon)](https://github.com/matthieuGravy/panicmode-doc)
+- 🖥️ [Live Demo](https://panicmode-example.vercel.app/)
 
-## Features
+## ✨ Features
 
-- Easy integration with Tailwind CSS and DaisyUI
-- Lightweight and fast
-- Simple routing system
-- Ready-to-use UI components
-- Perfect for quick prototyping and small projects
+- 🎨 Easy integration with Tailwind CSS and DaisyUI
+- 🚀 Lightweight and fast
+- 🧭 Simple routing system
+- 🧩 Ready-to-use UI components
+- ⚡ Perfect for quick prototyping and small projects
 
-## Installation
+## 💻 Installation
 
 ```sh
 npm install panicmode
@@ -29,14 +29,13 @@ npm install panicmode
 pnpm add panicmode
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 Here's a basic example of how to use PanicMode in your `main.ts`:
 
-```ts
+```typescript
 import "panicmode/dist/panicmode.css";
-import { PanicRouter } from "panicmode";
-import { PanicHeader } from "panicmode";
+import { PanicRouter, PanicHeader, PanicJumbo, PanicCard } from "panicmode";
 
 const rootElement = document.getElementById("app");
 if (!rootElement) throw new Error("Root element not found");
@@ -102,7 +101,15 @@ router.addRoute(
 router.render();
 ```
 
-## Contributing
+## 🤝 Contributing
 
 We welcome contributions to PanicMode! Please see our [Contributing Guide](CONTRIBUTING.md) for more details on how to get started.
 
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Thanks to all the contributors who have helped shape PanicMode.
+- Built with ❤️ using [TypeScript](https://www.typescriptlang.org/), [Tailwind CSS](https://tailwindcss.com/), and [DaisyUI](https://daisyui.com/).
