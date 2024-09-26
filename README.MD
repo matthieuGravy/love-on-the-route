@@ -4,7 +4,9 @@
 ![npm downloads](https://img.shields.io/npm/dt/panicmode.svg)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/panicmode.svg)
 
-**PanicMode** is a lightweight package designed to simplify the creation of static sites. It provides easy integration of Tailwind CSS and DaisyUI components without the complexity of heavier frameworks like React. Ideal for small projects and rapid prototyping, PanicMode offers a developer-friendly solution for those who want to focus on building rather than configuring.
+**PanicMode** is a lightweight package currently under development, designed to simplify the creation of static sites. It aims to provide easy integration of Tailwind CSS and DaisyUI components without the complexity of heavier frameworks like React. 
+
+> ⚠️ **Note:** PanicMode is in its early stages of development. Features and API may change as the project evolves.
 
 ## 🔗 Useful Links
 
@@ -13,13 +15,17 @@
 - 📚 [Documentation (Coming Soon)](https://github.com/matthieuGravy/panicmode-doc)
 - 🖥️ [Live Demo](https://panicmode-example.vercel.app/)
 
-## ✨ Features
+## ✨ Current Features
 
-- 🎨 Easy integration with Tailwind CSS and DaisyUI
-- 🚀 Lightweight and fast
-- 🧭 Simple routing system
-- 🧩 Ready-to-use UI components
-- ⚡ Perfect for quick prototyping and small projects
+PanicMode is still in its early stages, with two main functionalities currently available:
+
+1. 🧭 **Simple Routing**: Easy-to-use routing system for single-page applications.
+2. 🏗️ **Basic UI Components**: Currently includes:
+   - `PanicHeader`: For creating a header component
+   - `PanicJumbo`: For creating a hero/jumbotron section
+   - `PanicCard`: For creating card components
+
+> 🚀 More features are planned and will be added as the project develops.
 
 ## 💻 Installation
 
@@ -80,36 +86,23 @@ router.addRoute(
   "Home"
 );
 
-router.addRoute(
-  "/about",
-  () => {
-    contentElement.innerHTML =
-      "<h1>About PanicMode</h1><p>PanicMode is a UI component library for quick prototyping.</p>";
-  },
-  "About"
-);
-
-router.addRoute(
-  "/contact",
-  () => {
-    contentElement.innerHTML =
-      "<h1>Contact Us</h1><p>Get in touch with the PanicMode team.</p>";
-  },
-  "Contact"
-);
+// Add more routes as needed
 
 router.render();
 ```
 
+## 🛠️ Development
+
+PanicMode is actively being developed. We're working on expanding its feature set and improving existing functionalities. Stay tuned for updates!
+
 ## 🤝 Contributing
 
-We welcome contributions to PanicMode! Please see our [Contributing Guide](CONTRIBUTING.md) for more details on how to get started.
+While PanicMode is still in its early stages, we welcome ideas and suggestions. If you're interested in contributing or have feedback, please check our [Contributing Guide](CONTRIBUTING.md) and feel free to open an issue on our [GitHub repository](https://github.com/matthieuGravy/panicmode/issues).
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+---
 
-- Thanks to all the contributors who have helped shape PanicMode.
-- Built with ❤️ using [TypeScript](https://www.typescriptlang.org/), [Tailwind CSS](https://tailwindcss.com/), and [DaisyUI](https://daisyui.com/).
+Built with ❤️ using [TypeScript](https://www.typescriptlang.org/), [Tailwind CSS](https://tailwindcss.com/), and [DaisyUI](https://daisyui.com/).
