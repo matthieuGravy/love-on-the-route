@@ -8,7 +8,7 @@
 
 ## Useful Links
 
-- [npm - panicmode](https://www.npmjs.com/package/panicmode/v/0.2.4)
+- [npm - panicmode](https://www.npmjs.com/package/panicmode)
 - [GitHub - panicmode](https://github.com/matthieuGravy/panicmode)
 - [GitHub - Documentation (Coming Soon)](https://github.com/matthieuGravy/panicmode-doc)
 - [Live Demo](https://panicmode-example.vercel.app/)
