@@ -12,3 +12,11 @@ Contributions are welcome! If you have any ideas, suggestions, or find any bugs,
 Please make sure your code follows the project's coding style and is properly documented.
 
 If you're not familiar with contributing on GitHub, [this guide](https://docs.github.com/en/get-started/quickstart/contributing-to-projects) can help you get started. Thanks for helping to improve PanicMode!
+
+## Install the repo
+
+```sh
+cd panicmode
+pnpm i
+pnpm run dev
+```
