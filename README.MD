@@ -102,11 +102,5 @@ router.addRoute(
 router.render();
 ```
 
-## Install the repo
 
-```sh
-cd panicmode
-npm i
-npm run dev
-```
 
