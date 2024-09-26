@@ -6,7 +6,6 @@ export class PanicHeader {
     private title: string,
     private links: Array<{ href: string; content: string }> = []
   ) {
-    console.log("PanicHeader: Initializing with title:", title);
     this.element = document.createElement("header");
     this.element.classList.add("navbar", "bg-base-200");
     this.updateContent();
@@ -14,7 +13,6 @@ export class PanicHeader {
   }
 
   private updateContent(): void {
-    console.log("PanicHeader: Updating content");
     const linksHtml = this.links
       .map(
         (link, index) =>
@@ -46,10 +44,6 @@ export class PanicHeader {
         <!-- You can add additional elements here if needed -->
       </div>
     `;
-    console.log(
-      "PanicHeader: Content updated. New innerHTML:",
-      this.element.innerHTML
-    );
 
     this.dropdownCheckbox = this.element.querySelector("#mobile-menu-checkbox");
   }
@@ -66,12 +60,10 @@ export class PanicHeader {
   }
 
   render(): HTMLElement {
-    console.log("PanicHeader: Rendering");
     return this.element;
   }
 
   updateLinks(newLinks: Array<{ href: string; content: string }>): void {
-    console.log("PanicHeader: Updating links:", newLinks);
     this.links = newLinks;
     this.updateContent();
     this.setupEventListeners();
