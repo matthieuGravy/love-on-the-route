@@ -1,10 +1,21 @@
-import "./style.css";
+// Export de la fonction d'initialisation simple
+export { loveOnTheRoute } from "./core/init";
 
-export * from "./components";
-export * from "./router";
-export * from "./utils";
+// Export des utilitaires de routing
+export { createRouter } from "./router/Router";
+export {
+  generateRoutes,
+  autoDiscoverPages,
+  autoDiscoverMultilingualPages,
+  autoDiscoverPagesIntelligent,
+  autoDiscoverPagesFlexible,
+} from "./utils/routeGenerator";
 
-if (import.meta.env.DEV) {
-  // Initialisez votre application ici
-  console.log("Application initialisée en mode développement");
-}
+// Export de l'utilitaire SEO
+export { updateSEO } from "./utils/seo";
+
+// Export de la navigation
+export { LoveNav, LangSelector } from "./components/index";
+
+// Export des types
+export type { RouteConfig } from "./utils/routeGenerator";

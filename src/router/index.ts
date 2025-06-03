@@ -1,1 +1,1 @@
-export { Router as PanicRouter } from "./Router";
+export { Router, createRouter } from "./Router";

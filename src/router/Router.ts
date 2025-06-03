@@ -1,24 +1,17 @@
-import { PanicHeader } from "../components/PanicHeader";
-
 type RouteHandler = () => void;
 
 interface Route {
   path: string;
   handler: RouteHandler;
   title: string;
+  children?: Route[];
 }
 
 export class Router {
   private routes: Route[] = [];
   private contentElement: HTMLElement;
 
-  constructor(private rootElement: HTMLElement, private header: PanicHeader) {
-    // Insérer le header en premier
-    this.rootElement.insertBefore(
-      this.header.render(),
-      this.rootElement.firstChild
-    );
-
+  constructor(private rootElement: HTMLElement) {
     // Créer et ajouter l'élément de contenu
     this.contentElement = document.createElement("div");
     this.contentElement.id = "content";
@@ -28,17 +21,33 @@ export class Router {
     this.setupNavigationListener();
   }
 
-  addRoute(path: string, handler: RouteHandler, title: string): void {
-    this.routes.push({ path, handler, title });
-    this.updateHeaderLinks();
+  addRoute(
+    path: string,
+    handler: RouteHandler,
+    title: string,
+    parentPath?: string
+  ): void {
+    const route: Route = { path, handler, title };
+
+    if (parentPath) {
+      const parent = this.findRoute(parentPath);
+      if (parent) {
+        if (!parent.children) parent.children = [];
+        parent.children.push(route);
+      }
+    } else {
+      this.routes.push(route);
+    }
   }
 
-  private updateHeaderLinks(): void {
-    const links = this.routes.map(({ path, title }) => ({
-      href: path,
-      content: title,
-    }));
-    this.header.updateLinks(links);
+  autoGenerateRoutes(
+    components: Record<string, { default: RouteHandler }>
+  ): void {
+    Object.entries(components).forEach(([name, component]) => {
+      const path = `/${name.toLowerCase()}`;
+      const title = name.replace(/([A-Z])/g, " $1").trim();
+      this.addRoute(path, component.default, title);
+    });
   }
 
   private findRoute(path: string): Route | undefined {
@@ -55,6 +64,13 @@ export class Router {
     const path = window.location.pathname;
     const route = this.findRoute(path);
 
+    console.log(`🔍 Router.render() - Path: ${path}`);
+    console.log(
+      `📋 Routes disponibles:`,
+      this.routes.map((r) => r.path)
+    );
+    console.log(`🎯 Route trouvée:`, route);
+
     if (!this.contentElement) {
       console.error("Router: Content element not found");
       return;
@@ -64,10 +80,19 @@ export class Router {
     this.contentElement.innerHTML = "";
 
     if (route) {
+      console.log(`✅ Exécution du handler pour: ${route.path}`);
       route.handler();
     } else {
+      console.log(`❌ Aucune route trouvée pour: ${path}`);
       this.contentElement.innerHTML = "<h1>404 - Page Not Found</h1>";
     }
+
+    // Dispatcher un événement personnalisé pour informer la navigation
+    window.dispatchEvent(
+      new CustomEvent("routeChanged", {
+        detail: { path },
+      })
+    );
   }
 
   private setupNavigationListener(): void {
@@ -78,4 +103,14 @@ export class Router {
       }
     });
   }
+
+  // Méthode utilitaire pour obtenir les routes (pour génération de nav externe)
+  getRoutes(): Route[] {
+    return this.routes;
+  }
+}
+
+// Factory function pour une API plus simple
+export function createRouter(rootElement: HTMLElement): Router {
+  return new Router(rootElement);
 }
