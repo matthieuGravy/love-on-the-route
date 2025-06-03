@@ -9,15 +9,15 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
-      name: "PanicMode",
-      fileName: (format) => `panicmode.${format}.js`,
+      name: "LoveOnTheRoute",
+      fileName: (format) => `love-on-the-route.${format}.js`,
     },
     rollupOptions: {
       external: [],
       output: {
         globals: {},
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === "style.css") return "panicmode.css";
+          if (assetInfo.name === "style.css") return "love-on-the-route.css";
           return assetInfo.name || "unknown";
         },
       },

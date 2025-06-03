@@ -1,108 +1,298 @@
-# 🚨 PanicMode
+# Love On The Route
 
-![npm version](https://img.shields.io/npm/v/panicmode.svg)
-![npm downloads](https://img.shields.io/npm/dt/panicmode.svg)
-![npm bundle size](https://img.shields.io/bundlephobia/min/panicmode.svg)
+<!-- Sélecteur de langue -->
 
-**PanicMode** is a lightweight package currently under development, designed to simplify the creation of static sites. It aims to provide easy integration of Tailwind CSS and DaisyUI components without the complexity of heavier frameworks like React. 
+**🌍 Language / Langue:**
 
-> ⚠️ **Note:** PanicMode is in its early stages of development. Features and API may change as the project evolves.
-
-## 🔗 Useful Links
-
-- 📦 [npm - panicmode](https://www.npmjs.com/package/panicmode)
-- 🐙 [GitHub - panicmode](https://github.com/matthieuGravy/panicmode)
-- 📚 [Documentation (Coming Soon)](https://github.com/matthieuGravy/panicmode-doc)
-- 🖥️ [Live Demo](https://panicmode-example.vercel.app/)
-
-## ✨ Current Features
-
-PanicMode is still in its early stages, with two main functionalities currently available:
-
-1. 🧭 **Simple Routing**: Easy-to-use routing system for single-page applications.
-2. 🏗️ **Basic UI Components**: Currently includes:
-   - `PanicHeader`: For creating a header component
-   - `PanicJumbo`: For creating a hero/jumbotron section
-   - `PanicCard`: For creating card components
-
-> 🚀 More features are planned and will be added as the project develops.
-
-## 💻 Installation
-
-```sh
-npm install panicmode
-# or
-pnpm add panicmode
-```
-
-## 🚀 Quick Start
-
-Here's a basic example of how to use PanicMode in your `main.ts`:
-
-```typescript
-import "panicmode/dist/panicmode.css";
-import { PanicRouter, PanicHeader, PanicJumbo, PanicCard } from "panicmode";
-
-const rootElement = document.getElementById("app");
-if (!rootElement) throw new Error("Root element not found");
-
-const header = new PanicHeader("<a href='/'>panicMode</a>");
-const router = new PanicRouter(rootElement, header);
-
-rootElement.appendChild(header.render());
-
-const contentElement = document.createElement("div");
-contentElement.id = "content";
-rootElement.appendChild(contentElement);
-
-router.addRoute(
-  "/",
-  () => {
-    const panicJumbo = new PanicJumbo(
-      "Welcome to panicMode",
-      "h2",
-      "p",
-      "This is a panic jumbo",
-      "Learn More",
-      "a",
-      "primary",
-      "About PanicMode",
-      "/about"
-    );
-
-    const panicCard = new PanicCard(
-      "Panic Card",
-      "This is a panic card",
-      "/vite.svg",
-      "PanicMode logo",
-      "View Details",
-      "/contact",
-      "primary"
-    );
-    contentElement.innerHTML = "";
-    contentElement.appendChild(panicJumbo.render());
-    contentElement.appendChild(panicCard.render());
-  },
-  "Home"
-);
-
-// Add more routes as needed
-
-router.render();
-```
-
-## 🛠️ Development
-
-PanicMode is actively being developed. We're working on expanding its feature set and improving existing functionalities. Stay tuned for updates!
-
-## 🤝 Contributing
-
-While PanicMode is still in its early stages, we welcome ideas and suggestions. If you're interested in contributing or have feedback, please check our [Contributing Guide](CONTRIBUTING.md) and feel free to open an issue on our [GitHub repository](https://github.com/matthieuGravy/panicmode/issues).
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- [🇬🇧 English](#english)
+- [🇫🇷 Français](#français)
 
 ---
 
-Built with ❤️ using [TypeScript](https://www.typescriptlang.org/), [Tailwind CSS](https://tailwindcss.com/), and [DaisyUI](https://daisyui.com/).
+## English
+
+<img src="assets/love-on-the-route.png" alt="Love On The Route" width="200" />
+
+**The 3 annoying things solved for your vanilla JS/TS SPAs: routing, navigation, SEO, multi-language**
+
+### What it solves
+
+- **File-based routing** - Create `pages/About.ts` → Route `/about` automatically
+- **Automatic navigation** - Generate menus without imposed CSS
+- **SEO helpers** - Meta tags in one line
+
+### Installation
+
+```bash
+npm install love-on-the-route
+```
+
+### Ultra Simple Usage - 4 lines
+
+```typescript
+import {
+  createRouter,
+  autoDiscoverPagesIntelligent,
+  generateRoutes,
+} from "love-on-the-route";
+
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const { routes } = autoDiscoverPagesIntelligent(pages);
+const router = createRouter(document.querySelector("#app"));
+generateRoutes(router, routes);
+router.render();
+```
+
+**That's it!** Your pages in `pages/` become navigable routes.
+
+### File structure
+
+```
+src/
+├── pages/
+│   ├── Home.ts      # → Route "/"
+│   ├── About.ts     # → Route "/about"
+│   └── Contact.ts   # → Route "/contact"
+└── main.ts
+```
+
+### Creating a page
+
+```typescript
+// pages/Services.ts
+export default function Services(): HTMLElement {
+  const container = document.createElement("div");
+  container.innerHTML = `
+    <h1>Our Services</h1>
+    <p>List of our services...</p>
+  `;
+  return container;
+}
+```
+
+**Automatically:**
+
+- Route `/services` created
+- Navigation updated
+- SEO configured
+
+### Usage levels
+
+#### 1. Ultra Simple (4 lines)
+
+```typescript
+import {
+  createRouter,
+  autoDiscoverPagesIntelligent,
+  generateRoutes,
+} from "love-on-the-route";
+
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const { routes } = autoDiscoverPagesIntelligent(pages);
+const router = createRouter(document.querySelector("#app"));
+generateRoutes(router, routes);
+router.render();
+```
+
+#### 2. With Navigation (7 lines)
+
+```typescript
+import {
+  createRouter,
+  autoDiscoverPagesIntelligent,
+  generateRoutes,
+  LoveNav,
+} from "love-on-the-route";
+
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const { routes } = autoDiscoverPagesIntelligent(pages);
+const router = createRouter(document.querySelector("#app"));
+const nav = new LoveNav(routes.map((r) => ({ path: r.path, title: r.title })));
+document.body.insertBefore(nav.render(), document.querySelector("#app"));
+generateRoutes(router, routes);
+router.render();
+```
+
+### Multilingual support
+
+#### Multilingual structure
+
+```
+pages/
+├── en/
+│   ├── Home.ts     # → Route "/en"
+│   └── About.ts    # → Route "/en/about"
+└── fr/
+    ├── Home.ts     # → Route "/fr"
+    └── About.ts    # → Route "/fr/about"
+```
+
+#### Automatic detection
+
+```typescript
+const { routes, languages, isMultilingual } =
+  autoDiscoverPagesIntelligent(pages);
+
+if (isMultilingual) {
+  console.log("Detected languages:", languages); // ["en", "fr"]
+  // Automatic language selector configuration
+}
+```
+
+### Why Love On The Route?
+
+- **Ultra simple** - 4 lines to start
+- **Zero imposed CSS** - Your design, your classes
+- **File-based routing** - Like Next.js but vanilla
+- **SEO ready** - Automatic meta tags
+- **TypeScript** - Full support
+- **Multilingual** - Automatic detection
+- **Flexible names** - No constraints on file names
+
+---
+
+## Français
+
+<img src="assets/love-on-the-route.png" alt="Love On The Route" width="200" />
+
+**Les 3 trucs chiants en moins pour vos SPAs vanilla JS/TS : routing, navigation, SEO, multi langue**
+
+### Ce que ça résout
+
+- **Routing file-based** - Créez `pages/About.ts` → Route `/about` automatique
+- **Navigation automatique** - Génération des menus sans CSS imposé
+- **SEO helpers** - Meta tags en une ligne
+
+### Installation
+
+```bash
+npm install love-on-the-route
+```
+
+### Usage Ultra Simple - 4 lignes
+
+```typescript
+import {
+  createRouter,
+  autoDiscoverPagesIntelligent,
+  generateRoutes,
+} from "love-on-the-route";
+
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const { routes } = autoDiscoverPagesIntelligent(pages);
+const router = createRouter(document.querySelector("#app"));
+generateRoutes(router, routes);
+router.render();
+```
+
+**C'est tout !** Vos pages dans `pages/` deviennent des routes navigables.
+
+### Structure des fichiers
+
+```
+src/
+├── pages/
+│   ├── Home.ts      # → Route "/"
+│   ├── About.ts     # → Route "/about"
+│   └── Contact.ts   # → Route "/contact"
+└── main.ts
+```
+
+### Créer une page
+
+```typescript
+// pages/Services.ts
+export default function Services(): HTMLElement {
+  const container = document.createElement("div");
+  container.innerHTML = `
+    <h1>Nos Services</h1>
+    <p>Liste de nos services...</p>
+  `;
+  return container;
+}
+```
+
+**Automatiquement :**
+
+- Route `/services` créée
+- Navigation mise à jour
+- SEO configuré
+
+### Niveaux d'usage
+
+#### 1. Ultra Simple (4 lignes)
+
+```typescript
+import {
+  createRouter,
+  autoDiscoverPagesIntelligent,
+  generateRoutes,
+} from "love-on-the-route";
+
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const { routes } = autoDiscoverPagesIntelligent(pages);
+const router = createRouter(document.querySelector("#app"));
+generateRoutes(router, routes);
+router.render();
+```
+
+#### 2. Avec Navigation (7 lignes)
+
+```typescript
+import {
+  createRouter,
+  autoDiscoverPagesIntelligent,
+  generateRoutes,
+  LoveNav,
+} from "love-on-the-route";
+
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const { routes } = autoDiscoverPagesIntelligent(pages);
+const router = createRouter(document.querySelector("#app"));
+const nav = new LoveNav(routes.map((r) => ({ path: r.path, title: r.title })));
+document.body.insertBefore(nav.render(), document.querySelector("#app"));
+generateRoutes(router, routes);
+router.render();
+```
+
+### Support multilingue
+
+#### Structure multilingue
+
+```
+pages/
+├── en/
+│   ├── Home.ts     # → Route "/en"
+│   └── About.ts    # → Route "/en/about"
+└── fr/
+    ├── Home.ts     # → Route "/fr"
+    └── About.ts    # → Route "/fr/about"
+```
+
+#### Détection automatique
+
+```typescript
+const { routes, languages, isMultilingual } =
+  autoDiscoverPagesIntelligent(pages);
+
+if (isMultilingual) {
+  console.log("Langues détectées :", languages); // ["en", "fr"]
+  // Configuration automatique du sélecteur de langue
+}
+```
+
+### Pourquoi Love On The Route ?
+
+- **Ultra simple** - 4 lignes pour démarrer
+- **Zero CSS imposé** - Votre design, vos classes
+- **File-based routing** - Comme Next.js mais vanilla
+- **SEO ready** - Meta tags automatiques
+- **TypeScript** - Support complet
+- **Multilingue** - Détection automatique
+- **Noms flexibles** - Pas de contraintes sur les noms de fichiers
+
+---
+
+**Love On The Route** - The 3 annoying things solved! / Les 3 trucs chiants en moins !
+
+_From connection lines to routing lines_ 🎶 | Inspired by [Kormak](https://open.spotify.com/intl-fr/album/48e1TU9d2D5Y25wwTWmudM)
