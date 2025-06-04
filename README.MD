@@ -40,9 +40,6 @@ const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
   string,
   {
     default: () => HTMLElement;
-    title?: string;
-    description?: string;
-    keywords?: string[];
   }
 >;
 const { routes } = autoDiscoverPagesIntelligent(pages);
@@ -98,9 +95,6 @@ const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
   string,
   {
     default: () => HTMLElement;
-    title?: string;
-    description?: string;
-    keywords?: string[];
   }
 >;
 const { routes } = autoDiscoverPagesIntelligent(pages);
@@ -257,9 +251,6 @@ const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
   string,
   {
     default: () => HTMLElement;
-    title?: string;
-    description?: string;
-    keywords?: string[];
   }
 >;
 const { routes } = autoDiscoverPagesIntelligent(pages);
@@ -315,9 +306,6 @@ const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
   string,
   {
     default: () => HTMLElement;
-    title?: string;
-    description?: string;
-    keywords?: string[];
   }
 >;
 const { routes } = autoDiscoverPagesIntelligent(pages);
