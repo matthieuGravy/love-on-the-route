@@ -36,9 +36,17 @@ import {
   generateRoutes,
 } from "love-on-the-route";
 
-const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
+  string,
+  {
+    default: () => HTMLElement;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  }
+>;
 const { routes } = autoDiscoverPagesIntelligent(pages);
-const router = createRouter(document.querySelector("#app"));
+const router = createRouter(document.body);
 generateRoutes(router, routes);
 router.render();
 ```
@@ -73,12 +81,11 @@ export default function Services(): HTMLElement {
 **Automatically:**
 
 - Route `/services` created
-- Navigation updated
-- SEO configured
+- Ready for navigation and SEO (if you add them)
 
 ### Usage levels
 
-#### 1. Ultra Simple (4 lines)
+#### 1. Ultra Simple (4 lines) - Just Routing
 
 ```typescript
 import {
@@ -87,14 +94,25 @@ import {
   generateRoutes,
 } from "love-on-the-route";
 
-const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
+  string,
+  {
+    default: () => HTMLElement;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  }
+>;
 const { routes } = autoDiscoverPagesIntelligent(pages);
-const router = createRouter(document.querySelector("#app"));
+const router = createRouter(document.body);
 generateRoutes(router, routes);
 router.render();
 ```
 
-#### 2. With Navigation (7 lines)
+✅ **What you get:** File-based routing  
+❌ **What you don't get:** Navigation, SEO (you add them if needed)
+
+#### 2. With Navigation (7 lines) - Routing + Nav
 
 ```typescript
 import {
@@ -104,14 +122,71 @@ import {
   LoveNav,
 } from "love-on-the-route";
 
-const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
+  string,
+  {
+    default: () => HTMLElement;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  }
+>;
 const { routes } = autoDiscoverPagesIntelligent(pages);
-const router = createRouter(document.querySelector("#app"));
+const router = createRouter(document.body);
 const nav = new LoveNav(routes.map((r) => ({ path: r.path, title: r.title })));
-document.body.insertBefore(nav.render(), document.querySelector("#app"));
+document.body.insertBefore(nav.render(), document.querySelector("#content"));
 generateRoutes(router, routes);
 router.render();
 ```
+
+✅ **What you get:** File-based routing + Automatic navigation  
+❌ **What you don't get:** SEO (you add it if needed)
+
+#### 3. With SEO - Manual SEO Control
+
+```typescript
+import {
+  createRouter,
+  autoDiscoverPagesIntelligent,
+  generateRoutes,
+  updateSEO,
+} from "love-on-the-route";
+
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
+  string,
+  {
+    default: () => HTMLElement;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  }
+>;
+const { routes } = autoDiscoverPagesIntelligent(pages);
+
+// Wrap route handlers with SEO
+const routesWithSEO = routes.map((route) => ({
+  ...route,
+  handler: () => {
+    // Update SEO for this page
+    updateSEO({
+      title: route.title,
+      description: route.description,
+      url: window.location.href,
+    });
+
+    // Render the page
+    const element = route.handler();
+    document.querySelector("#content")?.appendChild(element);
+  },
+}));
+
+const router = createRouter(document.body);
+generateRoutes(router, routesWithSEO);
+router.render();
+```
+
+✅ **What you get:** File-based routing + Manual SEO control  
+✅ **What you control:** Exactly when and how SEO is updated
 
 ### Multilingual support
 
@@ -178,9 +253,17 @@ import {
   generateRoutes,
 } from "love-on-the-route";
 
-const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
+  string,
+  {
+    default: () => HTMLElement;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  }
+>;
 const { routes } = autoDiscoverPagesIntelligent(pages);
-const router = createRouter(document.querySelector("#app"));
+const router = createRouter(document.body);
 generateRoutes(router, routes);
 router.render();
 ```
@@ -215,12 +298,11 @@ export default function Services(): HTMLElement {
 **Automatiquement :**
 
 - Route `/services` créée
-- Navigation mise à jour
-- SEO configuré
+- Prêt pour navigation et SEO (si vous les ajoutez)
 
 ### Niveaux d'usage
 
-#### 1. Ultra Simple (4 lignes)
+#### 1. Ultra Simple (4 lignes) - Juste le Routing
 
 ```typescript
 import {
@@ -229,14 +311,25 @@ import {
   generateRoutes,
 } from "love-on-the-route";
 
-const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
+  string,
+  {
+    default: () => HTMLElement;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  }
+>;
 const { routes } = autoDiscoverPagesIntelligent(pages);
-const router = createRouter(document.querySelector("#app"));
+const router = createRouter(document.body);
 generateRoutes(router, routes);
 router.render();
 ```
 
-#### 2. Avec Navigation (7 lignes)
+✅ **Ce que vous obtenez :** Routing file-based  
+❌ **Ce que vous n'obtenez pas :** Navigation, SEO (vous les ajoutez si besoin)
+
+#### 2. Avec Navigation (7 lignes) - Routing + Nav
 
 ```typescript
 import {
@@ -246,14 +339,71 @@ import {
   LoveNav,
 } from "love-on-the-route";
 
-const pages = import.meta.glob("./pages/**/*.ts", { eager: true });
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
+  string,
+  {
+    default: () => HTMLElement;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  }
+>;
 const { routes } = autoDiscoverPagesIntelligent(pages);
-const router = createRouter(document.querySelector("#app"));
+const router = createRouter(document.body);
 const nav = new LoveNav(routes.map((r) => ({ path: r.path, title: r.title })));
-document.body.insertBefore(nav.render(), document.querySelector("#app"));
+document.body.insertBefore(nav.render(), document.querySelector("#content"));
 generateRoutes(router, routes);
 router.render();
 ```
+
+✅ **Ce que vous obtenez :** Routing file-based + Navigation automatique  
+❌ **Ce que vous n'obtenez pas :** SEO (vous l'ajoutez si besoin)
+
+#### 3. Avec SEO - Contrôle manuel du SEO
+
+```typescript
+import {
+  createRouter,
+  autoDiscoverPagesIntelligent,
+  generateRoutes,
+  updateSEO,
+} from "love-on-the-route";
+
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
+  string,
+  {
+    default: () => HTMLElement;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  }
+>;
+const { routes } = autoDiscoverPagesIntelligent(pages);
+
+// Enrober les handlers de route avec le SEO
+const routesWithSEO = routes.map((route) => ({
+  ...route,
+  handler: () => {
+    // Mettre à jour le SEO pour cette page
+    updateSEO({
+      title: route.title,
+      description: route.description,
+      url: window.location.href,
+    });
+
+    // Rendre la page
+    const element = route.handler();
+    document.querySelector("#content")?.appendChild(element);
+  },
+}));
+
+const router = createRouter(document.body);
+generateRoutes(router, routesWithSEO);
+router.render();
+```
+
+✅ **Ce que vous obtenez :** Routing file-based + Contrôle manuel du SEO  
+✅ **Ce que vous contrôlez :** Exactement quand et comment le SEO est mis à jour
 
 ### Support multilingue
 

@@ -13,7 +13,7 @@ export class Router {
 
   constructor(private rootElement: HTMLElement) {
     // Créer et ajouter l'élément de contenu
-    this.contentElement = document.createElement("div");
+    this.contentElement = document.createElement("main");
     this.contentElement.id = "content";
     this.rootElement.appendChild(this.contentElement);
 
