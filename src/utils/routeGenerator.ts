@@ -98,6 +98,50 @@ export function generateRoutes(
       generateRoutes(router, config.children, fullPath);
     }
   });
+
+  // Configuration automatique du multilingue si détecté
+  autoConfigureMultilingual(router, configs);
+}
+
+// Helper pour configurer automatiquement le multilingue
+function autoConfigureMultilingual(
+  router: Router,
+  configs: RouteConfig[]
+): void {
+  try {
+    // Détecter les langues présentes dans les routes
+    const languagesFound = new Set<string>();
+
+    configs.forEach((config) => {
+      if (config.language) {
+        languagesFound.add(config.language);
+      }
+      // Ou détecter depuis le chemin comme /en, /fr, /en/, /fr/
+      const langMatch = config.path.match(/^\/([a-z]{2})(?:\/|$)/);
+      if (langMatch) {
+        languagesFound.add(langMatch[1]);
+      }
+    });
+
+    // Si on a détecté des langues, configurer le router
+    if (languagesFound.size > 0) {
+      const supportedLanguages = Array.from(languagesFound).sort();
+      const defaultLanguage = supportedLanguages[0];
+
+      // Configuration du router pour le multilingue
+      if (typeof (router as any).setMultilingualConfig === "function") {
+        (router as any).setMultilingualConfig(
+          supportedLanguages,
+          defaultLanguage
+        );
+      }
+    }
+  } catch (error) {
+    console.error(
+      "[Love On The Route] Error auto-configuring multilingual mode",
+      error
+    );
+  }
 }
 
 export function autoDiscoverPages(
@@ -259,7 +303,6 @@ export function autoDiscoverPagesIntelligent(
 
   if (hasLanguageFolders) {
     // Mode multilingue détecté
-    console.log("🌍 Mode multilingue détecté automatiquement");
     const { routes, languages } = autoDiscoverMultilingualPages(
       components,
       supportedLanguages
@@ -267,7 +310,6 @@ export function autoDiscoverPagesIntelligent(
     return { routes, languages, isMultilingual: true };
   } else {
     // Mode classique détecté
-    console.log("🏠 Mode classique détecté automatiquement");
     const routes = autoDiscoverPages(components);
     return { routes, isMultilingual: false };
   }
@@ -294,8 +336,6 @@ export function autoDiscoverPagesFlexible(
 
   if (hasLanguageFolders) {
     // Mode multilingue détecté
-    console.log("Mode multilingue détecté automatiquement");
-
     const detectedLanguages = new Set<string>();
     const routes = Object.entries(components).map(([path, component]) => {
       const pathParts = path.split("/");
@@ -359,9 +399,6 @@ export function autoDiscoverPagesFlexible(
       isMultilingual: true,
     };
   } else {
-    // Mode classique détecté
-    console.log("Mode classique détecté automatiquement");
-
     const routes = Object.entries(components).map(([path, component]) => {
       const pathParts = path.split("/");
       const fileName = pathParts.pop()?.replace(".ts", "") || "";

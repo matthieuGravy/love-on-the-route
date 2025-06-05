@@ -10,6 +10,8 @@ interface Route {
 export class Router {
   private routes: Route[] = [];
   private contentElement: HTMLElement;
+  private defaultLanguage?: string;
+  private supportedLanguages?: string[];
 
   constructor(private rootElement: HTMLElement) {
     // Créer et ajouter l'élément de contenu
@@ -74,21 +76,25 @@ export class Router {
 
   render(): void {
     const path = window.location.pathname;
-    const route = this.findRoute(path);
 
     if (!this.contentElement) {
       console.error("Router: Content element not found");
       return;
     }
 
+    // Vérifier si une redirection multilingue est nécessaire
+    if (this.handleMultilingualRedirect(path)) {
+      return; // La redirection va déclencher un nouveau render()
+    }
+
+    const route = this.findRoute(path);
+
     // Vider uniquement l'élément de contenu, pas tout le rootElement
     this.contentElement.innerHTML = "";
 
     if (route) {
-      console.log(`✅ Exécution du handler pour: ${route.path}`);
       route.handler();
     } else {
-      console.log(`❌ Aucune route trouvée pour: ${path}`);
       this.contentElement.innerHTML = "<h1>404 - Page Not Found</h1>";
     }
 
@@ -107,6 +113,51 @@ export class Router {
         this.navigate(e.target.pathname);
       }
     });
+  }
+
+  // Méthode pour configurer le mode multilingue
+  setMultilingualConfig(
+    supportedLanguages: string[],
+    defaultLanguage?: string
+  ): void {
+    if (
+      !supportedLanguages ||
+      !Array.isArray(supportedLanguages) ||
+      supportedLanguages.length === 0
+    ) {
+      console.error(
+        "[Love On The Route] Router: Valid supported languages array is required"
+      );
+      return;
+    }
+
+    this.supportedLanguages = supportedLanguages;
+    this.defaultLanguage = defaultLanguage || supportedLanguages[0];
+  }
+
+  // Méthode pour détecter si une redirection multilingue est nécessaire
+  private handleMultilingualRedirect(path: string): boolean {
+    // Si pas en mode multilingue, pas de redirection
+    if (!this.supportedLanguages || !this.defaultLanguage) {
+      return false;
+    }
+
+    // Si on est sur "/" et qu'on a des routes multilingues
+    if (path === "/") {
+      // Vérifier s'il y a des routes qui commencent par des codes de langue
+      const hasLanguageRoutes = this.routes.some((route) =>
+        this.supportedLanguages!.some((lang) =>
+          route.path.startsWith(`/${lang}`)
+        )
+      );
+
+      if (hasLanguageRoutes) {
+        this.navigate(`/${this.defaultLanguage}`);
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // Méthode utilitaire pour obtenir les routes (pour génération de nav externe)
