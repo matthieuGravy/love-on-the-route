@@ -1,6 +1,6 @@
 {
   "name": "love-on-the-route",
-  "version": "1.3.0-beta.2",
+  "version": "1.3.0",
   "type": "module",
   "main": "dist/love-on-the-route.umd.js",
   "module": "dist/love-on-the-route.es.js",
