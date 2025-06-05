@@ -14,8 +14,8 @@
 
 **🌍 Language / Langue:**
 
-- [🇬🇧 English](#english)
-- [🇫🇷 Français](#français)
+[🇬🇧 English](#english)
+[🇫🇷 Français](#français)
 
 </div>
 
@@ -331,7 +331,10 @@ if (isMultilingual && languages) {
     showFlags: true,
   });
 
-  document.body.insertBefore(langSelector.render(), nav.render());
+  document.body.insertBefore(
+    langSelector.render(),
+    document.querySelector("#content")
+  );
 
   window.addEventListener("routeChanged", updateNavigation);
 }
@@ -366,7 +369,11 @@ if (isMultilingual && languages) {
     showFlags: true,
   });
 
-  document.body.insertBefore(langSelector.render(), nav.render());
+  document.body.insertBefore(
+    langSelector.render(),
+    document.querySelector("#content")
+  );
+
   window.addEventListener("routeChanged", updateNavigation);
 }
 ```
@@ -636,7 +643,6 @@ const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
 const { routes, languages, isMultilingual } =
   autoDiscoverPagesIntelligent(pages);
 
-// Routes avec SEO
 const routesWithSEO = routes.map((route) => ({
   ...route,
   component: () => {
@@ -696,7 +702,10 @@ if (isMultilingual && languages) {
     showFlags: true,
   });
 
-  document.body.insertBefore(langSelector.render(), nav.render());
+  document.body.insertBefore(
+    langSelector.render(),
+    document.querySelector("#content")
+  );
 
   window.addEventListener("routeChanged", updateNavigation);
 }
@@ -731,7 +740,11 @@ if (isMultilingual && languages) {
     showFlags: true,
   });
 
-  document.body.insertBefore(langSelector.render(), nav.render());
+  document.body.insertBefore(
+    langSelector.render(),
+    document.querySelector("#content")
+  );
+
   window.addEventListener("routeChanged", updateNavigation);
 }
 ```
