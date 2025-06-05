@@ -15,23 +15,64 @@ export class LoveNav {
       containerClass?: string;
     } = {}
   ) {
-    this.element = document.createElement(this.options.tagName || "nav");
-    if (this.options.containerClass) {
-      this.element.className = this.options.containerClass;
+    // Validation des paramètres
+    if (!routes || !Array.isArray(routes)) {
+      console.error("[Love On The Route] LoveNav: Routes array is required");
+      this.routes = [];
     }
-    this.updateContent();
-    this.setupActiveStateListener();
+
+    if (!options || typeof options !== "object") {
+      console.error("[Love On The Route] LoveNav: Options should be an object");
+      this.options = {};
+    }
+
+    try {
+      this.element = document.createElement(this.options.tagName || "nav");
+      if (this.options.containerClass) {
+        this.element.className = this.options.containerClass;
+      }
+      this.updateContent();
+      this.setupActiveStateListener();
+    } catch (error) {
+      console.error(
+        "[Love On The Route] LoveNav: Error during initialization",
+        error
+      );
+      // Create fallback element
+      this.element = document.createElement("nav");
+    }
   }
 
   private updateContent(): void {
-    const links = this.routes
-      .map((route) => {
-        const linkClass = this.options.linkClass || "";
-        return `<a href="${route.path}" class="${linkClass}" data-route="${route.path}">${route.title}</a>`;
-      })
-      .join("");
+    try {
+      if (!this.routes || this.routes.length === 0) {
+        console.warn(
+          "[Love On The Route] LoveNav: No routes provided for navigation"
+        );
+        this.element.innerHTML = "";
+        return;
+      }
 
-    this.element.innerHTML = links;
+      const links = this.routes
+        .filter((route) => route && route.path && route.title) // Filter valid routes
+        .map((route) => {
+          const linkClass = this.options.linkClass || "";
+          const safePath = route.path.replace(/"/g, "&quot;"); // Escape quotes
+          const safeTitle = route.title
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;"); // Escape HTML
+          return `<a href="${safePath}" class="${linkClass}" data-route="${safePath}">${safeTitle}</a>`;
+        })
+        .join("");
+
+      this.element.innerHTML = links;
+    } catch (error) {
+      console.error(
+        "[Love On The Route] LoveNav: Error updating content",
+        error
+      );
+      this.element.innerHTML = "";
+    }
   }
 
   private setupActiveStateListener(): void {
@@ -66,7 +107,21 @@ export class LoveNav {
   }
 
   updateRoutes(newRoutes: Route[]): void {
-    this.routes = newRoutes;
-    this.updateContent();
+    if (!newRoutes || !Array.isArray(newRoutes)) {
+      console.error(
+        "[Love On The Route] LoveNav: updateRoutes requires a valid routes array"
+      );
+      return;
+    }
+
+    try {
+      this.routes = newRoutes;
+      this.updateContent();
+    } catch (error) {
+      console.error(
+        "[Love On The Route] LoveNav: Error updating routes",
+        error
+      );
+    }
   }
 }

@@ -6,7 +6,7 @@ interface LangOption {
 
 export class LangSelector {
   private element: HTMLElement;
-  private currentLang: string;
+  private currentLang: string = "en"; // Default value
 
   constructor(
     private languages: LangOption[],
@@ -18,31 +18,63 @@ export class LangSelector {
       showFlags?: boolean;
     } = {}
   ) {
-    this.currentLang = this.detectCurrentLanguage();
-    this.element = document.createElement(this.options.tagName || "div");
-
-    if (this.options.containerClass) {
-      this.element.className = this.options.containerClass;
+    // Validation des paramètres
+    if (!languages || !Array.isArray(languages) || languages.length === 0) {
+      console.error(
+        "[Love On The Route] LangSelector: Languages array is required and cannot be empty"
+      );
+      this.languages = [{ code: "en", label: "English" }]; // Fallback
     }
 
-    this.updateContent();
-    this.setupLanguageListener();
+    if (!options || typeof options !== "object") {
+      console.error(
+        "[Love On The Route] LangSelector: Options should be an object"
+      );
+      this.options = {};
+    }
+
+    try {
+      this.currentLang = this.detectCurrentLanguage();
+      this.element = document.createElement(this.options.tagName || "div");
+
+      if (this.options.containerClass) {
+        this.element.className = this.options.containerClass;
+      }
+
+      this.updateContent();
+      this.setupLanguageListener();
+    } catch (error) {
+      console.error(
+        "[Love On The Route] LangSelector: Error during initialization",
+        error
+      );
+      // Create fallback element
+      this.element = document.createElement("div");
+    }
   }
 
   private detectCurrentLanguage(): string {
-    const path = window.location.pathname;
-    const segments = path.split("/").filter(Boolean);
+    try {
+      const path = window.location.pathname;
+      const segments = path.split("/").filter(Boolean);
 
-    // Check if first segment is a language code
-    if (segments.length > 0) {
-      const possibleLang = segments[0];
-      if (this.languages.some((lang) => lang.code === possibleLang)) {
-        return possibleLang;
+      // Check if first segment is a language code
+      if (segments.length > 0) {
+        const possibleLang = segments[0];
+        if (this.languages.some((lang) => lang.code === possibleLang)) {
+          return possibleLang;
+        }
       }
-    }
 
-    // Default to first language if no language in URL
-    return this.languages[0]?.code || "en";
+      // Default to first language if no language in URL
+      return this.languages[0]?.code || "en";
+    } catch (error) {
+      console.error(
+        "[Love On The Route] LangSelector: Error detecting current language",
+        error
+      );
+      return "en"; // Fallback
+    }
   }
 
   private updateContent(): void {
@@ -87,29 +119,51 @@ export class LangSelector {
   }
 
   private switchLanguage(langCode: string): void {
-    const currentPath = window.location.pathname;
-    const segments = currentPath.split("/").filter(Boolean);
-
-    // Remove current language from path if present
-    if (
-      segments.length > 0 &&
-      this.languages.some((lang) => lang.code === segments[0])
-    ) {
-      segments.shift(); // Remove first segment (current language)
+    if (!langCode || typeof langCode !== "string") {
+      console.error(
+        "[Love On The Route] LangSelector: Valid language code is required"
+      );
+      return;
     }
 
-    // Build new path with new language
-    const newPath = `/${langCode}${
-      segments.length > 0 ? "/" + segments.join("/") : ""
-    }`;
+    if (!this.languages.some((lang) => lang.code === langCode)) {
+      console.error(
+        "[Love On The Route] LangSelector: Language code not found in supported languages",
+        langCode
+      );
+      return;
+    }
 
-    // Navigate to new path
-    window.history.pushState({}, "", newPath);
-    window.dispatchEvent(
-      new CustomEvent("routeChanged", {
-        detail: { path: newPath, lang: langCode },
-      })
-    );
+    try {
+      const currentPath = window.location.pathname;
+      const segments = currentPath.split("/").filter(Boolean);
+
+      // Remove current language from path if present
+      if (
+        segments.length > 0 &&
+        this.languages.some((lang) => lang.code === segments[0])
+      ) {
+        segments.shift(); // Remove first segment (current language)
+      }
+
+      // Build new path with new language
+      const newPath = `/${langCode}${
+        segments.length > 0 ? "/" + segments.join("/") : ""
+      }`;
+
+      // Navigate to new path
+      window.history.pushState({}, "", newPath);
+      window.dispatchEvent(
+        new CustomEvent("routeChanged", {
+          detail: { path: newPath, lang: langCode },
+        })
+      );
+    } catch (error) {
+      console.error(
+        "[Love On The Route] LangSelector: Error switching language",
+        error
+      );
+    }
   }
 
   render(): HTMLElement {
@@ -121,7 +175,25 @@ export class LangSelector {
   }
 
   updateLanguages(newLanguages: LangOption[]): void {
-    this.languages = newLanguages;
-    this.updateContent();
+    if (
+      !newLanguages ||
+      !Array.isArray(newLanguages) ||
+      newLanguages.length === 0
+    ) {
+      console.error(
+        "[Love On The Route] LangSelector: updateLanguages requires a valid, non-empty languages array"
+      );
+      return;
+    }
+
+    try {
+      this.languages = newLanguages;
+      this.updateContent();
+    } catch (error) {
+      console.error(
+        "[Love On The Route] LangSelector: Error updating languages",
+        error
+      );
+    }
   }
 }

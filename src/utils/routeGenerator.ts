@@ -13,16 +13,81 @@ export function generateRoutes(
   configs: RouteConfig[],
   parentPath: string = ""
 ): void {
+  // Validation des paramètres
+  if (!router) {
+    console.error(
+      "[Love On The Route] generateRoutes: Router instance is required"
+    );
+    return;
+  }
+
+  if (!configs || !Array.isArray(configs)) {
+    console.error(
+      "[Love On The Route] generateRoutes: Valid route configs array is required"
+    );
+    return;
+  }
+
+  if (configs.length === 0) {
+    console.warn("[Love On The Route] generateRoutes: No routes provided");
+    return;
+  }
+
   configs.forEach((config) => {
+    // Validation de chaque config
+    if (!config || typeof config !== "object") {
+      console.error(
+        "[Love On The Route] generateRoutes: Invalid route config",
+        config
+      );
+      return;
+    }
+
+    if (!config.path || typeof config.path !== "string") {
+      console.error(
+        "[Love On The Route] generateRoutes: Route config must have a valid path",
+        config
+      );
+      return;
+    }
+
+    if (!config.component || typeof config.component !== "function") {
+      console.error(
+        "[Love On The Route] generateRoutes: Route config must have a valid component function",
+        config
+      );
+      return;
+    }
+
     const fullPath = parentPath + config.path;
     router.addRoute(
       fullPath,
       () => {
-        const element = config.component();
-        // Obtenir l'élément de contenu du router et y ajouter l'élément
-        const contentElement = document.getElementById("content");
-        if (contentElement) {
-          contentElement.appendChild(element);
+        try {
+          const element = config.component();
+          if (!element || !(element instanceof HTMLElement)) {
+            console.error(
+              "[Love On The Route] Component must return a valid HTMLElement",
+              config.path
+            );
+            return;
+          }
+
+          // Obtenir l'élément de contenu du router et y ajouter l'élément
+          const contentElement = document.getElementById("content");
+          if (contentElement) {
+            contentElement.appendChild(element);
+          } else {
+            console.error(
+              "[Love On The Route] Content element '#content' not found in DOM"
+            );
+          }
+        } catch (error) {
+          console.error(
+            "[Love On The Route] Error executing component for route",
+            config.path,
+            error
+          );
         }
       },
       config.title,
@@ -38,6 +103,19 @@ export function generateRoutes(
 export function autoDiscoverPages(
   components: Record<string, { default: () => HTMLElement }>
 ): RouteConfig[] {
+  // Validation des paramètres
+  if (!components || typeof components !== "object") {
+    console.error(
+      "[Love On The Route] autoDiscoverPages: Components object is required"
+    );
+    return [];
+  }
+
+  if (Object.keys(components).length === 0) {
+    console.warn("[Love On The Route] autoDiscoverPages: No components found");
+    return [];
+  }
+
   // Liste des fichiers à ignorer
   const ignoredFiles = ["index.ts", "PanicHeader.ts"];
 

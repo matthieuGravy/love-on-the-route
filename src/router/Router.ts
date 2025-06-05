@@ -27,6 +27,14 @@ export class Router {
     title: string,
     parentPath?: string
   ): void {
+    if (!path || !handler || !title) {
+      console.error("Router: Invalid route parameters", {
+        path,
+        handler: !!handler,
+        title,
+      });
+      return;
+    }
     const route: Route = { path, handler, title };
 
     if (parentPath) {
@@ -56,6 +64,10 @@ export class Router {
   }
 
   navigate(path: string): void {
+    if (!path || typeof path !== "string") {
+      console.error("Router: Invalid path for navigation", path);
+      return;
+    }
     window.history.pushState({}, "", path);
     this.render();
   }
@@ -63,13 +75,6 @@ export class Router {
   render(): void {
     const path = window.location.pathname;
     const route = this.findRoute(path);
-
-    console.log(`🔍 Router.render() - Path: ${path}`);
-    console.log(
-      `📋 Routes disponibles:`,
-      this.routes.map((r) => r.path)
-    );
-    console.log(`🎯 Route trouvée:`, route);
 
     if (!this.contentElement) {
       console.error("Router: Content element not found");
