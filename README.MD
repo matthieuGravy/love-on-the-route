@@ -1,4 +1,14 @@
-# Love On The Route
+<div align="center">
+
+<img src="assets/love-on-the-route.png" alt="Love On The Route logo" width="200" />
+
+[![npm version](https://img.shields.io/npm/v/love-on-the-route?style=flat-square&logo=npm&label=version)](https://www.npmjs.com/package/love-on-the-route)
+[![npm downloads](https://img.shields.io/npm/dm/love-on-the-route?style=flat-square&logo=npm)](https://www.npmjs.com/package/love-on-the-route)
+[![license](https://img.shields.io/npm/l/love-on-the-route?style=flat-square)](https://github.com/matthieuGravy/love-on-the-route/blob/main/LICENSE)
+
+# <b>Love On The Route</b>
+
+<sub>The 3 annoying things solved for vanilla JS/TS SPAs: <b>routing, navigation & SEO</b></sub>
 
 <!-- Sélecteur de langue -->
 
@@ -7,11 +17,11 @@
 - [🇬🇧 English](#english)
 - [🇫🇷 Français](#français)
 
+</div>
+
 ---
 
 ## English
-
-<img src="assets/love-on-the-route.png" alt="Love On The Route" width="200" />
 
 **The 3 annoying things solved for your vanilla JS/TS SPAs: routing, navigation, SEO, multi-language**
 
@@ -157,26 +167,54 @@ const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
 >;
 const { routes } = autoDiscoverPagesIntelligent(pages);
 
-// Wrap route handlers with SEO
 const routesWithSEO = routes.map((route) => ({
   ...route,
-  handler: () => {
-    // Update SEO for this page
+  component: () => {
+    const pageModule = Object.values(pages).find(
+      (module) => module.default.name === route.component.name
+    );
+
     updateSEO({
-      title: route.title,
-      description: route.description,
+      title: pageModule?.title || route.title,
+      description: pageModule?.description,
       url: window.location.href,
+      keywords: pageModule?.keywords,
     });
 
-    // Render the page
-    const element = route.handler();
-    document.querySelector("#content")?.appendChild(element);
+    return route.component();
   },
 }));
 
 const router = createRouter(document.body);
 generateRoutes(router, routesWithSEO);
 router.render();
+```
+
+**Simpler alternative - Add SEO directly to your pages:**
+
+```typescript
+// pages/About.ts
+import { updateSEO } from "love-on-the-route";
+
+export const title = "About";
+export const description = "Learn more about our company";
+export const keywords = ["company", "history", "team"];
+
+export default function About(): HTMLElement {
+  updateSEO({
+    title,
+    description,
+    url: window.location.href,
+    keywords,
+  });
+
+  const container = document.createElement("div");
+  container.innerHTML = `
+    <h1>${title}</h1>
+    <p>Discover our story...</p>
+  `;
+  return container;
+}
 ```
 
 ✅ **What you get:** File-based routing + Manual SEO control  
@@ -205,6 +243,131 @@ const { routes, languages, isMultilingual } =
 if (isMultilingual) {
   console.log("Detected languages:", languages); // ["en", "fr"]
   // Automatic language selector configuration
+}
+```
+
+#### Full multilingual usage
+
+```typescript
+import {
+  createRouter,
+  autoDiscoverPagesIntelligent,
+  generateRoutes,
+  updateSEO,
+  LoveNav,
+  LangSelector,
+  filterRoutesByCurrentLanguage,
+} from "love-on-the-route";
+
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
+  string,
+  {
+    default: () => HTMLElement;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  }
+>;
+
+const { routes, languages, isMultilingual } =
+  autoDiscoverPagesIntelligent(pages);
+
+const routesWithSEO = routes.map((route) => ({
+  ...route,
+  component: () => {
+    const pageModule = Object.values(pages).find(
+      (module) => module.default.name === route.component.name
+    );
+
+    updateSEO({
+      title: pageModule?.title || route.title,
+      description: pageModule?.description,
+      url: window.location.href,
+      keywords: pageModule?.keywords,
+    });
+
+    return route.component();
+  },
+}));
+
+const router = createRouter(document.body);
+generateRoutes(router, routesWithSEO);
+
+let nav: LoveNav;
+const updateNavigation = () => {
+  const currentLanguageRoutes = filterRoutesByCurrentLanguage(
+    routes,
+    languages
+  );
+  const navRoutes = currentLanguageRoutes.map((r) => ({
+    path: r.path,
+    title: r.title,
+  }));
+
+  if (nav) {
+    nav.updateRoutes(navRoutes);
+  } else {
+    nav = new LoveNav(navRoutes);
+    document.body.insertBefore(
+      nav.render(),
+      document.querySelector("#content")
+    );
+  }
+};
+
+updateNavigation();
+
+if (isMultilingual && languages) {
+  const langOptions = languages.map((lang) => ({
+    code: lang,
+    label: lang === "en" ? "English" : lang === "fr" ? "Français" : lang,
+    flag: lang === "en" ? "🇬🇧" : lang === "fr" ? "🇫🇷" : undefined,
+  }));
+
+  const langSelector = new LangSelector(langOptions, {
+    containerClass: "language-selector",
+    linkClass: "lang-link",
+    activeClass: "active",
+    showFlags: true,
+  });
+
+  document.body.insertBefore(langSelector.render(), nav.render());
+
+  window.addEventListener("routeChanged", updateNavigation);
+}
+
+router.render();
+
+if (isMultilingual && window.location.pathname === "/") {
+  const defaultLang = languages?.[0] || "en";
+  router.navigate(`/${defaultLang}`);
+}
+```
+
+**Alternative with SVG/images :**
+
+```typescript
+if (isMultilingual && languages) {
+  const langOptions = languages.map((lang) => ({
+    code: lang,
+    label: lang === "en" ? "English" : lang === "fr" ? "Français" : lang,
+    flag:
+      lang === "en"
+        ? `<img src="/flags/en.svg" alt="EN" width="16" height="12" style="margin-right: 4px;">`
+        : lang === "fr"
+        ? `<svg width="16" height="12" style="margin-right: 4px;"><rect width="16" height="4" fill="#0055A4"/><rect y="4" width="16" height="4" fill="white"/><rect y="8" width="16" height="4" fill="#EF4135"/></svg>`
+        : undefined,
+  }));
+
+  const langSelector = new LangSelector(langOptions, {
+    containerClass: "language-selector",
+    linkClass: "lang-link",
+    activeClass: "active",
+    showFlags: true,
+  });
+
+  document.body.insertBefore(langSelector.render(), nav.render());
+  window.addEventListener("routeChanged", updateNavigation);
 }
 ```
 
@@ -368,20 +531,21 @@ const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
 >;
 const { routes } = autoDiscoverPagesIntelligent(pages);
 
-// Enrober les handlers de route avec le SEO
 const routesWithSEO = routes.map((route) => ({
   ...route,
-  handler: () => {
-    // Mettre à jour le SEO pour cette page
+  component: () => {
+    const pageModule = Object.values(pages).find(
+      (module) => module.default.name === route.component.name
+    );
+
     updateSEO({
-      title: route.title,
-      description: route.description,
+      title: pageModule?.title || route.title,
+      description: pageModule?.description,
       url: window.location.href,
+      keywords: pageModule?.keywords,
     });
 
-    // Rendre la page
-    const element = route.handler();
-    document.querySelector("#content")?.appendChild(element);
+    return route.component();
   },
 }));
 
@@ -390,7 +554,34 @@ generateRoutes(router, routesWithSEO);
 router.render();
 ```
 
-✅ **Ce que vous obtenez :** Routing file-based + Contrôle manuel du SEO  
+**Alternative plus simple - Ajouter SEO directement dans vos pages :**
+
+```typescript
+// pages/About.ts
+import { updateSEO } from "love-on-the-route";
+
+export const title = "À propos";
+export const description = "En savoir plus sur notre entreprise";
+export const keywords = ["entreprise", "histoire", "équipe"];
+
+export default function About(): HTMLElement {
+  updateSEO({
+    title,
+    description,
+    url: window.location.href,
+    keywords,
+  });
+
+  const container = document.createElement("div");
+  container.innerHTML = `
+    <h1>${title}</h1>
+    <p>Découvrez notre histoire...</p>
+  `;
+  return container;
+}
+```
+
+✅ **Ce que vous obtenez :** Routing file-based + Manual SEO control  
 ✅ **Ce que vous contrôlez :** Exactement quand et comment le SEO est mis à jour
 
 ### Support multilingue
@@ -416,6 +607,132 @@ const { routes, languages, isMultilingual } =
 if (isMultilingual) {
   console.log("Langues détectées :", languages); // ["en", "fr"]
   // Configuration automatique du sélecteur de langue
+}
+```
+
+#### Usage complet multilingue
+
+```typescript
+import {
+  createRouter,
+  autoDiscoverPagesIntelligent,
+  generateRoutes,
+  updateSEO,
+  LoveNav,
+  LangSelector,
+  filterRoutesByCurrentLanguage,
+} from "love-on-the-route";
+
+const pages = import.meta.glob("./pages/**/*.ts", { eager: true }) as Record<
+  string,
+  {
+    default: () => HTMLElement;
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  }
+>;
+
+const { routes, languages, isMultilingual } =
+  autoDiscoverPagesIntelligent(pages);
+
+// Routes avec SEO
+const routesWithSEO = routes.map((route) => ({
+  ...route,
+  component: () => {
+    const pageModule = Object.values(pages).find(
+      (module) => module.default.name === route.component.name
+    );
+
+    updateSEO({
+      title: pageModule?.title || route.title,
+      description: pageModule?.description,
+      url: window.location.href,
+      keywords: pageModule?.keywords,
+    });
+
+    return route.component();
+  },
+}));
+
+const router = createRouter(document.body);
+generateRoutes(router, routesWithSEO);
+
+let nav: LoveNav;
+const updateNavigation = () => {
+  const currentLanguageRoutes = filterRoutesByCurrentLanguage(
+    routes,
+    languages
+  );
+  const navRoutes = currentLanguageRoutes.map((r) => ({
+    path: r.path,
+    title: r.title,
+  }));
+
+  if (nav) {
+    nav.updateRoutes(navRoutes);
+  } else {
+    nav = new LoveNav(navRoutes);
+    document.body.insertBefore(
+      nav.render(),
+      document.querySelector("#content")
+    );
+  }
+};
+
+updateNavigation();
+
+if (isMultilingual && languages) {
+  const langOptions = languages.map((lang) => ({
+    code: lang,
+    label: lang === "en" ? "English" : lang === "fr" ? "Français" : lang,
+    flag: lang === "en" ? "🇬🇧" : lang === "fr" ? "🇫🇷" : undefined,
+  }));
+
+  const langSelector = new LangSelector(langOptions, {
+    containerClass: "language-selector",
+    linkClass: "lang-link",
+    activeClass: "active",
+    showFlags: true,
+  });
+
+  document.body.insertBefore(langSelector.render(), nav.render());
+
+  window.addEventListener("routeChanged", updateNavigation);
+}
+
+router.render();
+
+if (isMultilingual && window.location.pathname === "/") {
+  const defaultLang = languages?.[0] || "en";
+  router.navigate(`/${defaultLang}`);
+}
+```
+
+**Alternative avec SVG/images :**
+
+```typescript
+if (isMultilingual && languages) {
+  const langOptions = languages.map((lang) => ({
+    code: lang,
+    label: lang === "en" ? "English" : lang === "fr" ? "Français" : lang,
+    flag:
+      lang === "en"
+        ? `<img src="/flags/en.svg" alt="EN" width="16" height="12" style="margin-right: 4px;">`
+        : lang === "fr"
+        ? `<svg width="16" height="12" style="margin-right: 4px;"><rect width="16" height="4" fill="#0055A4"/><rect y="4" width="16" height="4" fill="white"/><rect y="8" width="16" height="4" fill="#EF4135"/></svg>`
+        : undefined,
+  }));
+
+  const langSelector = new LangSelector(langOptions, {
+    containerClass: "language-selector",
+    linkClass: "lang-link",
+    activeClass: "active",
+    showFlags: true,
+  });
+
+  document.body.insertBefore(langSelector.render(), nav.render());
+  window.addEventListener("routeChanged", updateNavigation);
 }
 ```
 

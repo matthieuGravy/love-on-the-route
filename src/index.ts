@@ -12,7 +12,12 @@ export {
 } from "./utils/routeGenerator";
 
 // Export de l'utilitaire SEO
-export { updateSEO } from "./utils/seo";
+export {
+  updateSEO,
+  resetSEO,
+  detectCurrentLanguage,
+  filterRoutesByCurrentLanguage,
+} from "./utils/seo";
 
 // Export de la navigation
 export { LoveNav, LangSelector } from "./components/index";

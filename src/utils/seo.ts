@@ -111,3 +111,42 @@ export function resetSEO(): void {
     canonicalLink.remove();
   }
 }
+
+// Helper pour détecter la langue actuelle depuis l'URL
+export function detectCurrentLanguage(
+  supportedLanguages: string[] = ["en", "fr"]
+): string {
+  const path = window.location.pathname;
+  const segments = path.split("/").filter(Boolean);
+
+  // Check if first segment is a language code
+  if (segments.length > 0) {
+    const possibleLang = segments[0];
+    if (supportedLanguages.includes(possibleLang)) {
+      return possibleLang;
+    }
+  }
+
+  // Default to first language if no language in URL
+  return supportedLanguages[0] || "en";
+}
+
+// Helper pour filtrer les routes par langue actuelle
+export function filterRoutesByCurrentLanguage<
+  T extends { path: string; language?: string }
+>(routes: T[], supportedLanguages?: string[]): T[] {
+  if (!supportedLanguages || supportedLanguages.length === 0) {
+    return routes; // Pas multilingue, retourner toutes les routes
+  }
+
+  const currentLang = detectCurrentLanguage(supportedLanguages);
+
+  return routes.filter((route) => {
+    if (!route.language) {
+      // Routes sans langue spécifiée, probablement mode non-multilingue
+      return true;
+    }
+
+    return route.language === currentLang;
+  });
+}
