@@ -378,6 +378,149 @@ if (isMultilingual && languages) {
 }
 ```
 
+### Logo Configuration with LoveNav
+
+**New:** LoveNav now supports native logo integration with multiple configuration options.
+
+#### Option 1: Logo integrated in navigation (replaces Home)
+
+```typescript
+import { LoveNav } from "love-on-the-route";
+
+const routes = [
+  { path: "/", title: "Home" },
+  { path: "/about", title: "About" },
+  { path: "/contact", title: "Contact" },
+];
+
+const nav = new LoveNav(routes, {
+  containerClass: "main-navigation",
+  linkClass: "nav-link",
+  activeClass: "active",
+  logo: {
+    html: `<img src="/logo.svg" alt="My Site" width="120" height="40">`,
+    href: "/",
+    replacesHome: true, // Logo replaces the "Home" link
+    linkClass: "logo-link",
+    containerClass: "logo-container",
+  },
+});
+
+document.body.appendChild(nav.render());
+```
+
+#### Option 2: Logo separated from navigation
+
+```typescript
+const nav = new LoveNav(routes, {
+  containerClass: "main-navigation",
+  linkClass: "nav-link",
+  activeClass: "active",
+  separateLogoFromNav: true, // Logo rendered separately
+  logo: {
+    html: `<img src="/logo.svg" alt="My Site" width="120" height="40">`,
+    href: "/",
+    linkClass: "logo-link",
+    containerClass: "logo-container",
+  },
+});
+
+const { logo, nav: navElement } = nav.renderSeparate();
+
+// Full control over placement
+const header = document.createElement("header");
+header.style.cssText =
+  "display: flex; justify-content: space-between; align-items: center; padding: 1rem;";
+
+if (logo) header.appendChild(logo);
+header.appendChild(navElement);
+document.body.appendChild(header);
+```
+
+#### Option 3: Logo coexisting with Home
+
+```typescript
+const nav = new LoveNav(routes, {
+  logo: {
+    html: `<img src="/logo.svg" alt="My Site" width="80" height="30">`,
+    href: "/",
+    replacesHome: false, // Logo AND Home link (default)
+    linkClass: "logo-link",
+  },
+});
+```
+
+#### Multilingual configuration with logo
+
+```typescript
+const { routes, languages, isMultilingual } =
+  autoDiscoverPagesIntelligent(pages);
+
+if (isMultilingual) {
+  const getHomePath = (): string => {
+    const currentPath = window.location.pathname;
+    const currentLang = languages.find((lang) =>
+      currentPath.startsWith(`/${lang}`)
+    );
+    return `/${currentLang || languages[0]}`;
+  };
+
+  let nav: LoveNav;
+  const updateNavigation = () => {
+    const currentLanguageRoutes = filterRoutesByCurrentLanguage(
+      routes,
+      languages
+    );
+    const navRoutes = currentLanguageRoutes.map((r) => ({
+      path: r.path,
+      title: r.title,
+    }));
+
+    if (nav) {
+      nav.updateRoutes(navRoutes);
+      // Update logo href for current language
+      nav.updateLogo({
+        html: `<img src="/logo.svg" alt="My Site" width="120" height="40">`,
+        href: getHomePath(),
+        replacesHome: true,
+        linkClass: "logo-link",
+      });
+    } else {
+      nav = new LoveNav(navRoutes, {
+        logo: {
+          html: `<img src="/logo.svg" alt="My Site" width="120" height="40">`,
+          href: getHomePath(),
+          replacesHome: true,
+          linkClass: "logo-link",
+        },
+      });
+      document.body.appendChild(nav.render());
+    }
+  };
+
+  updateNavigation();
+  window.addEventListener("routeChanged", updateNavigation);
+}
+```
+
+#### Logo API
+
+```typescript
+interface LogoConfig {
+  html: string; // Logo HTML (img, svg, text...)
+  href?: string; // Destination URL (default: "/")
+  replacesHome?: boolean; // If true, replaces "Home" links (default: false)
+  containerClass?: string; // Container CSS class
+  linkClass?: string; // Link CSS class
+}
+```
+
+**Available methods:**
+
+- `nav.render()` - Normal rendering (logo integrated if configured)
+- `nav.renderSeparate()` - Separate rendering `{ logo?, nav }`
+- `nav.updateLogo(logoConfig)` - Dynamic logo update
+
 ### Why Love On The Route?
 
 - **Ultra simple** - 4 lines to start
@@ -391,8 +534,6 @@ if (isMultilingual && languages) {
 ---
 
 ## Français
-
-<img src="assets/love-on-the-route.png" alt="Love On The Route" width="200" />
 
 **Les 3 trucs chiants en moins pour vos SPAs vanilla JS/TS : routing, navigation, SEO, multi langue**
 
@@ -748,6 +889,149 @@ if (isMultilingual && languages) {
   window.addEventListener("routeChanged", updateNavigation);
 }
 ```
+
+### Configuration Logo avec LoveNav
+
+**Nouveau :** LoveNav supporte maintenant l'intégration native du logo avec plusieurs options de configuration.
+
+#### Option 1: Logo intégré dans la navigation (remplace Home)
+
+```typescript
+import { LoveNav } from "love-on-the-route";
+
+const routes = [
+  { path: "/", title: "Home" },
+  { path: "/about", title: "About" },
+  { path: "/contact", title: "Contact" },
+];
+
+const nav = new LoveNav(routes, {
+  containerClass: "main-navigation",
+  linkClass: "nav-link",
+  activeClass: "active",
+  logo: {
+    html: `<img src="/logo.svg" alt="Mon Site" width="120" height="40">`,
+    href: "/",
+    replacesHome: true, // Le logo remplace le lien "Home"
+    linkClass: "logo-link",
+    containerClass: "logo-container",
+  },
+});
+
+document.body.appendChild(nav.render());
+```
+
+#### Option 2: Logo séparé de la navigation
+
+```typescript
+const nav = new LoveNav(routes, {
+  containerClass: "main-navigation",
+  linkClass: "nav-link",
+  activeClass: "active",
+  separateLogoFromNav: true, // Logo rendu séparément
+  logo: {
+    html: `<img src="/logo.svg" alt="Mon Site" width="120" height="40">`,
+    href: "/",
+    linkClass: "logo-link",
+    containerClass: "logo-container",
+  },
+});
+
+const { logo, nav: navElement } = nav.renderSeparate();
+
+// Contrôle total sur le placement
+const header = document.createElement("header");
+header.style.cssText =
+  "display: flex; justify-content: space-between; align-items: center; padding: 1rem;";
+
+if (logo) header.appendChild(logo);
+header.appendChild(navElement);
+document.body.appendChild(header);
+```
+
+#### Option 3: Logo coexistant avec Home
+
+```typescript
+const nav = new LoveNav(routes, {
+  logo: {
+    html: `<img src="/logo.svg" alt="Mon Site" width="80" height="30">`,
+    href: "/",
+    replacesHome: false, // Logo ET lien Home (défaut)
+    linkClass: "logo-link",
+  },
+});
+```
+
+#### Configuration multilingue avec logo
+
+```typescript
+const { routes, languages, isMultilingual } =
+  autoDiscoverPagesIntelligent(pages);
+
+if (isMultilingual) {
+  const getHomePath = (): string => {
+    const currentPath = window.location.pathname;
+    const currentLang = languages.find((lang) =>
+      currentPath.startsWith(`/${lang}`)
+    );
+    return `/${currentLang || languages[0]}`;
+  };
+
+  let nav: LoveNav;
+  const updateNavigation = () => {
+    const currentLanguageRoutes = filterRoutesByCurrentLanguage(
+      routes,
+      languages
+    );
+    const navRoutes = currentLanguageRoutes.map((r) => ({
+      path: r.path,
+      title: r.title,
+    }));
+
+    if (nav) {
+      nav.updateRoutes(navRoutes);
+      // Mettre à jour le href du logo pour la langue courante
+      nav.updateLogo({
+        html: `<img src="/logo.svg" alt="Mon Site" width="120" height="40">`,
+        href: getHomePath(),
+        replacesHome: true,
+        linkClass: "logo-link",
+      });
+    } else {
+      nav = new LoveNav(navRoutes, {
+        logo: {
+          html: `<img src="/logo.svg" alt="Mon Site" width="120" height="40">`,
+          href: getHomePath(),
+          replacesHome: true,
+          linkClass: "logo-link",
+        },
+      });
+      document.body.appendChild(nav.render());
+    }
+  };
+
+  updateNavigation();
+  window.addEventListener("routeChanged", updateNavigation);
+}
+```
+
+#### API Logo
+
+```typescript
+interface LogoConfig {
+  html: string; // HTML du logo (img, svg, text...)
+  href?: string; // URL de destination (défaut: "/")
+  replacesHome?: boolean; // Si true, remplace les liens "Home"/"Accueil" (défaut: false)
+  containerClass?: string; // Classe CSS du conteneur
+  linkClass?: string; // Classe CSS du lien
+}
+```
+
+**Méthodes disponibles :**
+
+- `nav.render()` - Rendu normal (logo intégré si configuré)
+- `nav.renderSeparate()` - Rendu séparé `{ logo?, nav }`
+- `nav.updateLogo(logoConfig)` - Mise à jour dynamique du logo
 
 ### Pourquoi Love On The Route ?
 

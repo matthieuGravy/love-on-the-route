@@ -20,7 +20,7 @@ export {
 } from "./utils/seo";
 
 // Export de la navigation
-export { LoveNav, LangSelector } from "./components/index";
+export { LoveNav, LangSelector, type LogoConfig } from "./components/index";
 
 // Export des types
 export type { RouteConfig } from "./utils/routeGenerator";

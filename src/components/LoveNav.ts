@@ -3,8 +3,17 @@ interface Route {
   title: string;
 }
 
+export interface LogoConfig {
+  html: string;
+  href?: string;
+  replacesHome?: boolean;
+  containerClass?: string;
+  linkClass?: string;
+}
+
 export class LoveNav {
   private element: HTMLElement;
+  private logoConfig?: LogoConfig;
 
   constructor(
     private routes: Route[],
@@ -13,6 +22,8 @@ export class LoveNav {
       linkClass?: string;
       activeClass?: string;
       containerClass?: string;
+      logo?: LogoConfig;
+      separateLogoFromNav?: boolean;
     } = {}
   ) {
     // Validation des paramètres
@@ -25,6 +36,8 @@ export class LoveNav {
       console.error("[Love On The Route] LoveNav: Options should be an object");
       this.options = {};
     }
+
+    this.logoConfig = this.options.logo;
 
     try {
       this.element = document.createElement(this.options.tagName || "nav");
@@ -53,7 +66,35 @@ export class LoveNav {
         return;
       }
 
-      const links = this.routes
+      let content = "";
+
+      // Gestion du logo si configuré et non séparé
+      if (this.logoConfig && !this.options.separateLogoFromNav) {
+        const logoHref = this.logoConfig.href || "/";
+        const logoClass = this.logoConfig.linkClass || "logo-link";
+        const logoContainerClass = this.logoConfig.containerClass || "";
+
+        content += `<div class="${logoContainerClass}">
+          <a href="${logoHref}" class="${logoClass}" data-route="${logoHref}" data-logo="true">
+            ${this.logoConfig.html}
+          </a>
+        </div>`;
+      }
+
+      // Filtrer les routes en fonction de la configuration du logo
+      let routesToRender = this.routes;
+
+      if (this.logoConfig?.replacesHome) {
+        // Si le logo remplace home, exclure les routes "home" (path === "/" ou title === "Home")
+        routesToRender = this.routes.filter(
+          (route) =>
+            route.path !== "/" &&
+            route.title.toLowerCase() !== "home" &&
+            route.title.toLowerCase() !== "accueil"
+        );
+      }
+
+      const links = routesToRender
         .filter((route) => route && route.path && route.title) // Filter valid routes
         .map((route) => {
           const linkClass = this.options.linkClass || "";
@@ -65,7 +106,8 @@ export class LoveNav {
         })
         .join("");
 
-      this.element.innerHTML = links;
+      content += links;
+      this.element.innerHTML = content;
     } catch (error) {
       console.error(
         "[Love On The Route] LoveNav: Error updating content",
@@ -83,11 +125,27 @@ export class LoveNav {
 
       links.forEach((link) => {
         const routePath = link.getAttribute("data-route");
+        const isLogo = link.getAttribute("data-logo") === "true";
+
         if (this.options.activeClass) {
-          if (routePath === currentPath) {
-            link.classList.add(this.options.activeClass);
+          // Pour le logo, vérifier si on est sur la page d'accueil
+          if (isLogo) {
+            const isHomePage =
+              currentPath === "/" ||
+              currentPath === routePath ||
+              (this.logoConfig?.href && currentPath === this.logoConfig.href);
+            if (isHomePage) {
+              link.classList.add(this.options.activeClass);
+            } else {
+              link.classList.remove(this.options.activeClass);
+            }
           } else {
-            link.classList.remove(this.options.activeClass);
+            // Pour les liens normaux
+            if (routePath === currentPath) {
+              link.classList.add(this.options.activeClass);
+            } else {
+              link.classList.remove(this.options.activeClass);
+            }
           }
         }
       });
@@ -104,6 +162,41 @@ export class LoveNav {
 
   render(): HTMLElement {
     return this.element;
+  }
+
+  renderSeparate(): { logo?: HTMLElement; nav: HTMLElement } {
+    if (!this.logoConfig || !this.options.separateLogoFromNav) {
+      return { nav: this.element };
+    }
+
+    // Créer un élément logo séparé
+    const logoElement = document.createElement("div");
+    logoElement.className = this.logoConfig.containerClass || "logo-container";
+
+    const logoHref = this.logoConfig.href || "/";
+    const logoClass = this.logoConfig.linkClass || "logo-link";
+
+    logoElement.innerHTML = `
+      <a href="${logoHref}" class="${logoClass}" data-route="${logoHref}" data-logo="true">
+        ${this.logoConfig.html}
+      </a>
+    `;
+
+    // Configurer la navigation du logo
+    const logoLink = logoElement.querySelector("a");
+    if (logoLink) {
+      logoLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        // Déclencher la navigation via le router
+        window.dispatchEvent(
+          new CustomEvent("navigateToRoute", {
+            detail: { path: logoHref },
+          })
+        );
+      });
+    }
+
+    return { logo: logoElement, nav: this.element };
   }
 
   updateRoutes(newRoutes: Route[]): void {
@@ -123,5 +216,10 @@ export class LoveNav {
         error
       );
     }
+  }
+
+  updateLogo(logoConfig: LogoConfig): void {
+    this.logoConfig = logoConfig;
+    this.updateContent();
   }
 }

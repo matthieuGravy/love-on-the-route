@@ -5,6 +5,56 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0-beta.1] - 2024-12-19
+
+### 🚀 Beta Release: Native Logo Integration in LoveNav
+
+### Added
+
+- **Logo Configuration in LoveNav**: Native logo support with flexible integration options
+  - `LogoConfig` interface for comprehensive logo configuration
+  - `logo` option in LoveNav constructor for integrated logo setup
+  - `separateLogoFromNav` option for independent logo and navigation rendering
+  - `replacesHome` option to replace "Home"/"Accueil" links with logo
+- **New Methods**:
+  - `renderSeparate()` - Returns separate logo and navigation elements for custom layouts
+  - `updateLogo(logoConfig)` - Dynamic logo configuration updates
+- **Enhanced Navigation Logic**:
+  - Smart filtering of home routes when logo replaces home
+  - Active state management for logo links
+  - Support for custom CSS classes on logo container and link
+- **Multilingual Logo Support**:
+  - Dynamic logo href updates for current language
+  - Integration with existing multilingual navigation system
+
+### Enhanced
+
+- **LoveNav Component**: Extended with comprehensive logo integration
+  - Logo HTML can include any content (img, svg, text)
+  - Configurable href for logo destination
+  - Custom CSS classes for styling flexibility
+  - Active state management for logo links
+
+### Documentation
+
+- **Comprehensive Examples**: Three different logo integration patterns
+  - Option 1: Logo replaces Home link in navigation
+  - Option 2: Logo completely separated from navigation
+  - Option 3: Logo coexists with Home link
+- **Multilingual Examples**: Logo configuration with language switching
+- **API Reference**: Complete `LogoConfig` interface documentation
+
+### TypeScript
+
+- **Exported Types**: `LogoConfig` interface now publicly available
+- **Enhanced Type Safety**: Full type support for all new logo features
+
+### Beta Notes
+
+- **Feature Testing**: This beta introduces logo functionality for community testing
+- **Feedback Welcome**: Please test the new logo integration and report any issues
+- **Stability**: Core routing and navigation features remain stable
+
 ## [1.3.0] - 2024-12-19
 
 ### 🎉 Major Release: Comprehensive Error Handling & Multilingual Improvements
