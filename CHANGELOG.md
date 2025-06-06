@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0-beta.3] - 2024-12-19
+
+### 🐛 Beta Release: Bug Fixes & Debug Improvements
+
+### Fixed
+
+- **Logo Click Navigation**: Fixed logo click events not triggering router navigation
+  - Added proper click handlers for both integrated and separated logo modes
+  - Logo clicks now correctly use `history.pushState` and `PopStateEvent`
+- **Home Route Filtering**: Improved `replacesHome: true` logic
+  - Now correctly filters multilingual home routes (`/`, `/en`, `/fr`, etc.)
+  - Better pattern matching for language-specific home routes
+- **Event Handler Setup**: Fixed missing click event configuration
+  - All navigation links now properly handle clicks through router
+
+### Added
+
+- **Comprehensive Debug Logging**: Added detailed console logs for troubleshooting
+  - Logo configuration and initialization logs
+  - Route filtering debug information
+  - Click handler setup and navigation tracking
+  - Separate logo creation and event binding logs
+
+### Enhanced
+
+- **Navigation Logic**: Unified navigation handling across all link types
+- **Error Handling**: Better error reporting for missing route attributes
+
+### Debug Notes
+
+- All debug logs are prefixed with `[Love On The Route] DEBUG:`
+- Error logs use `[Love On The Route] ERROR:`
+- Logs can be used to troubleshoot logo integration issues
+
 ## [1.4.0-beta.2] - 2024-12-19
 
 ### 🚀 Beta Release: Native Logo Integration in LoveNav (Updated)

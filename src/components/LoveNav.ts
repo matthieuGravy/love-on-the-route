@@ -39,6 +39,13 @@ export class LoveNav {
 
     this.logoConfig = this.options.logo;
 
+    if (this.logoConfig) {
+      console.log(
+        "[Love On The Route] DEBUG: LoveNav initialisé avec logo:",
+        this.logoConfig
+      );
+    }
+
     try {
       this.element = document.createElement(this.options.tagName || "nav");
       if (this.options.containerClass) {
@@ -74,6 +81,13 @@ export class LoveNav {
         const logoClass = this.logoConfig.linkClass || "logo-link";
         const logoContainerClass = this.logoConfig.containerClass || "";
 
+        console.log("[Love On The Route] DEBUG: Ajout du logo intégré:", {
+          logoHref,
+          logoClass,
+          logoContainerClass,
+          replacesHome: this.logoConfig.replacesHome,
+        });
+
         content += `<div class="${logoContainerClass}">
           <a href="${logoHref}" class="${logoClass}" data-route="${logoHref}" data-logo="true">
             ${this.logoConfig.html}
@@ -85,12 +99,33 @@ export class LoveNav {
       let routesToRender = this.routes;
 
       if (this.logoConfig?.replacesHome) {
-        // Si le logo remplace home, exclure les routes "home" (path === "/" ou title === "Home")
-        routesToRender = this.routes.filter(
-          (route) =>
-            route.path !== "/" &&
-            route.title.toLowerCase() !== "home" &&
-            route.title.toLowerCase() !== "accueil"
+        console.log(
+          "[Love On The Route] DEBUG: Logo replacesHome activé, routes avant filtrage:",
+          this.routes
+        );
+
+        // Si le logo remplace home, exclure les routes "home"
+        routesToRender = this.routes.filter((route) => {
+          const path = route.path.toLowerCase();
+          const title = route.title.toLowerCase();
+
+          const isHomeRoute =
+            path === "/" ||
+            path.match(/^\/[a-z]{2}$/) || // /en, /fr, etc.
+            title === "home" ||
+            title === "accueil";
+
+          if (isHomeRoute) {
+            console.log("[Love On The Route] DEBUG: Route home exclue:", route);
+          }
+
+          // Exclure les routes home: "/", "/en", "/fr", etc. et les titres "home"/"accueil"
+          return !isHomeRoute;
+        });
+
+        console.log(
+          "[Love On The Route] DEBUG: Routes après filtrage:",
+          routesToRender
         );
       }
 
@@ -108,6 +143,9 @@ export class LoveNav {
 
       content += links;
       this.element.innerHTML = content;
+
+      // Ajouter les événements de clic après avoir mis à jour le contenu
+      this.setupClickHandlers();
     } catch (error) {
       console.error(
         "[Love On The Route] LoveNav: Error updating content",
@@ -115,6 +153,51 @@ export class LoveNav {
       );
       this.element.innerHTML = "";
     }
+  }
+
+  private setupClickHandlers(): void {
+    // Configurer les événements de clic pour tous les liens
+    const links = this.element.querySelectorAll("a");
+
+    console.log(
+      "[Love On The Route] DEBUG: Configuration des clics pour",
+      links.length,
+      "liens"
+    );
+
+    links.forEach((link, index) => {
+      const routePath = link.getAttribute("data-route");
+      const isLogo = link.getAttribute("data-logo") === "true";
+
+      console.log(`[Love On The Route] DEBUG: Lien ${index}:`, {
+        routePath,
+        isLogo,
+        innerHTML: link.innerHTML.substring(0, 50),
+      });
+
+      if (routePath) {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          console.log(
+            "[Love On The Route] DEBUG: Clic sur",
+            isLogo ? "logo" : "lien",
+            "vers:",
+            routePath
+          );
+
+          // Utiliser l'événement navigate standard du router
+          window.history.pushState(null, "", routePath);
+          window.dispatchEvent(new PopStateEvent("popstate"));
+
+          console.log(
+            "[Love On The Route] DEBUG: Navigation déclenchée vers:",
+            routePath
+          );
+        });
+      } else {
+        console.error("[Love On The Route] ERROR: Lien sans data-route:", link);
+      }
+    });
   }
 
   private setupActiveStateListener(): void {
@@ -185,15 +268,31 @@ export class LoveNav {
     // Configurer la navigation du logo
     const logoLink = logoElement.querySelector("a");
     if (logoLink) {
+      console.log(
+        "[Love On The Route] DEBUG: Configuration du clic logo séparé vers:",
+        logoHref
+      );
+
       logoLink.addEventListener("click", (e) => {
         e.preventDefault();
-        // Déclencher la navigation via le router
-        window.dispatchEvent(
-          new CustomEvent("navigateToRoute", {
-            detail: { path: logoHref },
-          })
+        console.log(
+          "[Love On The Route] DEBUG: Clic sur logo séparé vers:",
+          logoHref
+        );
+
+        // Utiliser l'événement navigate standard du router
+        window.history.pushState(null, "", logoHref);
+        window.dispatchEvent(new PopStateEvent("popstate"));
+
+        console.log(
+          "[Love On The Route] DEBUG: Navigation logo séparé déclenchée vers:",
+          logoHref
         );
       });
+    } else {
+      console.error(
+        "[Love On The Route] ERROR: Logo séparé créé mais lien non trouvé"
+      );
     }
 
     return { logo: logoElement, nav: this.element };
