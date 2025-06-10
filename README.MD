@@ -450,6 +450,71 @@ const nav = new LoveNav(routes, {
 });
 ```
 
+#### Language Detection & Dynamic Components
+
+**New:** Access current language for dynamic component localization.
+
+```typescript
+import {
+  getCurrentLanguage,
+  detectCurrentLanguage,
+  watchLanguageChanges,
+} from "love-on-the-route";
+
+// Simple current language detection
+const currentLang = getCurrentLanguage();
+console.log(currentLang); // 'fr', 'en', etc.
+
+// Language detection with supported languages
+const lang = detectCurrentLanguage(["en", "fr", "es"]);
+console.log(lang); // With guaranteed fallback
+
+// Watch for language changes (reactive components)
+const unsubscribe = watchLanguageChanges((newLang) => {
+  console.log("Language changed to:", newLang);
+  // Update your component...
+});
+
+// Stop watching
+unsubscribe();
+```
+
+**Example: Localized Component**
+
+```typescript
+import { getCurrentLanguage, watchLanguageChanges } from "love-on-the-route";
+
+class LocalizedComponent {
+  private currentLang: string;
+  private translations = {
+    en: { welcome: "Welcome", button: "Click me" },
+    fr: { welcome: "Bienvenue", button: "Cliquez-moi" },
+    es: { welcome: "Bienvenido", button: "Haz clic" },
+  };
+
+  constructor() {
+    this.currentLang = getCurrentLanguage();
+    this.render();
+
+    // Auto-update on language changes
+    watchLanguageChanges((newLang) => {
+      this.currentLang = newLang;
+      this.render();
+    });
+  }
+
+  render() {
+    const t = this.translations[this.currentLang] || this.translations.en;
+    const container = document.createElement("div");
+    container.innerHTML = `
+      <h1>${t.welcome}</h1>
+      <button>${t.button}</button>
+    `;
+    return container;
+  }
+}
+```
+
 #### Multilingual configuration with logo
 
 ```typescript
@@ -520,6 +585,93 @@ interface LogoConfig {
 - `nav.render()` - Normal rendering (logo integrated if configured)
 - `nav.renderSeparate()` - Separate rendering `{ logo?, nav }`
 - `nav.updateLogo(logoConfig)` - Dynamic logo update
+
+#### Option 4: Manual home filtering (when logo is managed separately)
+
+If you're managing your logo separately from LoveNav, you can manually filter home routes:
+
+```typescript
+const updateNavigation = () => {
+  const currentLanguageRoutes = filterRoutesByCurrentLanguage(
+    routes,
+    languages
+  );
+
+  // Manually filter out home routes
+  const navRoutes = currentLanguageRoutes
+    .filter((r) => {
+      const path = r.path.toLowerCase();
+      const title = r.title.toLowerCase();
+
+      // Exclude home routes
+      const isHomeRoute =
+        path === "/" ||
+        path.match(/^\/[a-z]{2}$/) || // /en, /fr, etc.
+        title === "home" ||
+        title === "accueil";
+
+      return !isHomeRoute;
+    })
+    .map((r) => ({ path: r.path, title: r.title }));
+
+  // Your separate logo management
+  logoLink.href = getHomePath();
+
+  if (nav) {
+    nav.updateRoutes(navRoutes);
+  } else {
+    nav = new LoveNav(navRoutes, {
+      containerClass: "main-navigation",
+      linkClass: "nav-link",
+      activeClass: "active",
+    });
+    navContainer.appendChild(nav.render());
+  }
+};
+```
+
+This approach is useful when:
+
+- You have a complex logo setup
+- You want full control over logo positioning
+- You're using a separate navigation container
+
+### Language Hooks
+
+Access and react to language changes in your components with these 3 simple hooks:
+
+#### 1. Simple current language detection
+
+```typescript
+import { getCurrentLanguage } from "love-on-the-route";
+
+const lang = getCurrentLanguage();
+console.log(lang); // 'fr', 'en', etc.
+```
+
+#### 2. Language detection with supported languages
+
+```typescript
+import { detectCurrentLanguage } from "love-on-the-route";
+
+const lang = detectCurrentLanguage(["en", "fr", "es"]);
+console.log(lang); // With guaranteed fallback
+```
+
+#### 3. 🆕 Watch for language changes
+
+```typescript
+import { watchLanguageChanges } from "love-on-the-route";
+
+// Listen to changes
+const unsubscribe = watchLanguageChanges((newLang) => {
+  console.log("Language changed to:", newLang);
+  // Update your component...
+});
+
+// Stop listening
+unsubscribe();
+```
 
 ### Why Love On The Route?
 
@@ -962,6 +1114,71 @@ const nav = new LoveNav(routes, {
 });
 ```
 
+#### Détection de Langue & Composants Dynamiques
+
+**Nouveau :** Accédez à la langue courante pour localiser dynamiquement vos composants.
+
+```typescript
+import {
+  getCurrentLanguage,
+  detectCurrentLanguage,
+  watchLanguageChanges,
+} from "love-on-the-route";
+
+// Détection simple de la langue courante
+const currentLang = getCurrentLanguage();
+console.log(currentLang); // 'fr', 'en', etc.
+
+// Détection avec langues supportées
+const lang = detectCurrentLanguage(["en", "fr", "es"]);
+console.log(lang); // Avec fallback garanti
+
+// Surveiller les changements de langue (composants réactifs)
+const unsubscribe = watchLanguageChanges((newLang) => {
+  console.log("Langue changée vers :", newLang);
+  // Mettre à jour votre composant...
+});
+
+// Arrêter la surveillance
+unsubscribe();
+```
+
+**Exemple : Composant Localisé**
+
+```typescript
+import { getCurrentLanguage, watchLanguageChanges } from "love-on-the-route";
+
+class ComposantLocalise {
+  private currentLang: string;
+  private translations = {
+    en: { welcome: "Welcome", button: "Click me" },
+    fr: { welcome: "Bienvenue", button: "Cliquez-moi" },
+    es: { welcome: "Bienvenido", button: "Haz clic" },
+  };
+
+  constructor() {
+    this.currentLang = getCurrentLanguage();
+    this.render();
+
+    // Mise à jour automatique lors des changements de langue
+    watchLanguageChanges((newLang) => {
+      this.currentLang = newLang;
+      this.render();
+    });
+  }
+
+  render() {
+    const t = this.translations[this.currentLang] || this.translations.fr;
+    const container = document.createElement("div");
+    container.innerHTML = `
+      <h1>${t.welcome}</h1>
+      <button>${t.button}</button>
+    `;
+    return container;
+  }
+}
+```
+
 #### Configuration multilingue avec logo
 
 ```typescript
@@ -1032,6 +1249,93 @@ interface LogoConfig {
 - `nav.render()` - Rendu normal (logo intégré si configuré)
 - `nav.renderSeparate()` - Rendu séparé `{ logo?, nav }`
 - `nav.updateLogo(logoConfig)` - Mise à jour dynamique du logo
+
+#### Option 4 : Filtrage manuel des routes home (quand le logo est géré séparément)
+
+Si vous gérez votre logo séparément de LoveNav, vous pouvez filtrer manuellement les routes home :
+
+```typescript
+const updateNavigation = () => {
+  const currentLanguageRoutes = filterRoutesByCurrentLanguage(
+    routes,
+    languages
+  );
+
+  // Filtrer manuellement les routes home
+  const navRoutes = currentLanguageRoutes
+    .filter((r) => {
+      const path = r.path.toLowerCase();
+      const title = r.title.toLowerCase();
+
+      // Exclure les routes home
+      const isHomeRoute =
+        path === "/" ||
+        path.match(/^\/[a-z]{2}$/) || // /en, /fr, etc.
+        title === "home" ||
+        title === "accueil";
+
+      return !isHomeRoute;
+    })
+    .map((r) => ({ path: r.path, title: r.title }));
+
+  // Votre gestion séparée du logo
+  logoLink.href = getHomePath();
+
+  if (nav) {
+    nav.updateRoutes(navRoutes);
+  } else {
+    nav = new LoveNav(navRoutes, {
+      containerClass: "main-navigation",
+      linkClass: "nav-link",
+      activeClass: "active",
+    });
+    navContainer.appendChild(nav.render());
+  }
+};
+```
+
+Cette approche est utile quand :
+
+- Vous avez une configuration de logo complexe
+- Vous voulez un contrôle total sur le positionnement du logo
+- Vous utilisez un conteneur de navigation séparé
+
+### Hooks de Langue
+
+Accédez et réagissez aux changements de langue dans vos composants avec ces 3 hooks simples :
+
+#### 1. Récupération simple de la langue actuelle
+
+```typescript
+import { getCurrentLanguage } from "love-on-the-route";
+
+const lang = getCurrentLanguage();
+console.log(lang); // 'fr', 'en', etc.
+```
+
+#### 2. Récupération avec langues supportées
+
+```typescript
+import { detectCurrentLanguage } from "love-on-the-route";
+
+const lang = detectCurrentLanguage(["en", "fr", "es"]);
+console.log(lang); // Avec fallback garanti
+```
+
+#### 3. 🆕 Surveillance des changements de langue
+
+```typescript
+import { watchLanguageChanges } from "love-on-the-route";
+
+// Écouter les changements
+const unsubscribe = watchLanguageChanges((newLang) => {
+  console.log("Langue changée vers :", newLang);
+  // Mettre à jour votre composant...
+});
+
+// Arrêter l'écoute
+unsubscribe();
+```
 
 ### Pourquoi Love On The Route ?
 

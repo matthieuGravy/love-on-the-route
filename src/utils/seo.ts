@@ -207,6 +207,116 @@ export function detectCurrentLanguage(
   }
 }
 
+// Fonction simplifiée pour récupérer la langue actuelle
+export function getCurrentLanguage(): string {
+  try {
+    const path = window.location.pathname;
+    const segments = path.split("/").filter(Boolean);
+
+    // Check if first segment looks like a language code (2-3 chars)
+    if (segments.length > 0) {
+      const possibleLang = segments[0];
+      if (possibleLang.length === 2 || possibleLang.length === 3) {
+        return possibleLang;
+      }
+    }
+
+    return "en"; // Default fallback
+  } catch (error) {
+    console.error(
+      "[Love On The Route] getCurrentLanguage: Error detecting language",
+      error
+    );
+    return "en";
+  }
+}
+
+// Type pour les callbacks de changement de langue
+type LanguageChangeCallback = (newLanguage: string) => void;
+
+// Store pour les listeners
+let languageListeners: LanguageChangeCallback[] = [];
+let currentWatchedLanguage = "";
+
+// Fonction pour surveiller les changements de langue
+export function watchLanguageChanges(
+  callback: LanguageChangeCallback
+): () => void {
+  if (!callback || typeof callback !== "function") {
+    console.error(
+      "[Love On The Route] watchLanguageChanges: Valid callback function is required"
+    );
+    return () => {};
+  }
+
+  languageListeners.push(callback);
+
+  // Démarrer la surveillance si c'est le premier listener
+  if (languageListeners.length === 1) {
+    startLanguageWatching();
+  }
+
+  // Retourner une fonction de désabonnement
+  return () => {
+    const index = languageListeners.indexOf(callback);
+    if (index > -1) {
+      languageListeners.splice(index, 1);
+    }
+
+    // Arrêter la surveillance si plus de listeners
+    if (languageListeners.length === 0) {
+      stopLanguageWatching();
+    }
+  };
+}
+
+// Fonction interne pour démarrer la surveillance
+function startLanguageWatching(): void {
+  currentWatchedLanguage = getCurrentLanguage();
+
+  // Écouter les changements d'URL via popstate
+  window.addEventListener("popstate", handleLanguageChange);
+
+  // Créer un observer pour les changements d'URL programmatiques
+  const originalPushState = history.pushState;
+  const originalReplaceState = history.replaceState;
+
+  history.pushState = function (...args) {
+    originalPushState.apply(history, args);
+    setTimeout(handleLanguageChange, 0);
+  };
+
+  history.replaceState = function (...args) {
+    originalReplaceState.apply(history, args);
+    setTimeout(handleLanguageChange, 0);
+  };
+}
+
+// Fonction interne pour arrêter la surveillance
+function stopLanguageWatching(): void {
+  window.removeEventListener("popstate", handleLanguageChange);
+  // Note: On ne peut pas facilement restaurer pushState/replaceState
+}
+
+// Handler pour les changements de langue
+function handleLanguageChange(): void {
+  const newLanguage = getCurrentLanguage();
+
+  if (newLanguage !== currentWatchedLanguage) {
+    currentWatchedLanguage = newLanguage;
+    languageListeners.forEach((callback) => {
+      try {
+        callback(newLanguage);
+      } catch (error) {
+        console.error(
+          "[Love On The Route] Error in language change callback:",
+          error
+        );
+      }
+    });
+  }
+}
+
 // Helper pour filtrer les routes par langue actuelle
 export function filterRoutesByCurrentLanguage<
   T extends { path: string; language?: string }

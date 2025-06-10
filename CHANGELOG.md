@@ -5,6 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0-beta.4] - 2024-12-19
+
+### 🚀 Beta Release: Language Hooks for Dynamic Components
+
+### Added
+
+- **Language Detection Hooks**: New reactive language management system
+  - `getCurrentLanguage()` - Simple current language detection without fallback
+  - `watchLanguageChanges(callback)` - Real-time language change monitoring for reactive components
+  - Automatic cleanup system for language listeners
+- **Enhanced Language API**: Improved language detection capabilities
+  - Smart language detection from URL segments (2-3 character codes)
+  - Support for programmatic navigation changes via pushState/replaceState
+  - Background monitoring with automatic start/stop based on listener count
+- **Developer Experience**: Complete documentation and examples
+  - Language Hooks section in README with 3 clear usage patterns
+  - Real-world component localization examples
+  - Comprehensive bilingual documentation (EN/FR)
+
+### Enhanced
+
+- **Language Change Detection**: Advanced monitoring system
+  - Listens to both `popstate` events and programmatic navigation
+  - Efficient listener management with automatic cleanup
+  - Error handling for callback functions
+- **API Consistency**: All language functions now exported from main index
+  - `getCurrentLanguage` and `watchLanguageChanges` added to exports
+  - Consistent error handling and logging patterns
+
+### Documentation
+
+- **New Language Hooks Section**: Dedicated section highlighting the 3 main hooks
+  - Simple current language detection
+  - Language detection with supported languages fallback
+  - Real-time language change watching
+- **Complete Examples**: Full component localization examples
+  - Reactive components that update on language changes
+  - Automatic cleanup and unsubscribe patterns
+  - Translation integration examples
+
+### TypeScript
+
+- **Enhanced Types**: New type definitions for language callbacks
+  - `LanguageChangeCallback` type for watch functions
+  - Full type safety for all new language features
+
+### Beta Notes
+
+- **Reactive Components**: Test the new language watching system
+- **Performance**: Efficient listener management with automatic cleanup
+- **Feedback Welcome**: Please test the new language hooks and provide feedback
+
 ## [1.4.0-beta.3] - 2024-12-19
 
 ### 🐛 Beta Release: Bug Fixes & Debug Improvements

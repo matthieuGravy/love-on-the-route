@@ -2,7 +2,7 @@
 export { loveOnTheRoute } from "./core/init";
 
 // Export des utilitaires de routing
-export { createRouter } from "./router/Router";
+export { createRouter } from "./router";
 export {
   generateRoutes,
   autoDiscoverPages,
@@ -16,11 +16,13 @@ export {
   updateSEO,
   resetSEO,
   detectCurrentLanguage,
+  getCurrentLanguage,
+  watchLanguageChanges,
   filterRoutesByCurrentLanguage,
 } from "./utils/seo";
 
 // Export de la navigation
-export { LoveNav, LangSelector, type LogoConfig } from "./components/index";
+export { LoveNav, LangSelector, type LogoConfig } from "./components";
 
 // Export des types
 export type { RouteConfig } from "./utils/routeGenerator";
