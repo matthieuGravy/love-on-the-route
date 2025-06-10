@@ -5,6 +5,59 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2024-12-19
+
+### 🎉 Major Release: Language Hooks for Dynamic Components
+
+### Added
+
+- **Language Detection Hooks**: Complete reactive language management system
+  - `getCurrentLanguage()` - Simple current language detection from URL
+  - `watchLanguageChanges(callback)` - Real-time language change monitoring for reactive components
+  - Automatic cleanup system with unsubscribe pattern for memory management
+- **Enhanced Language API**: Production-ready language detection capabilities
+  - Smart language detection from URL segments (2-3 character codes)
+  - Support for programmatic navigation changes via pushState/replaceState
+  - Efficient background monitoring with automatic start/stop based on listener count
+- **Developer Experience**: Complete documentation and real-world examples
+  - Dedicated "Language Hooks" section in README with 3 clear usage patterns
+  - Production-ready component localization examples
+  - Comprehensive bilingual documentation (EN/FR)
+
+### Enhanced
+
+- **Language Change Detection**: Advanced monitoring system for production apps
+  - Listens to both `popstate` events and programmatic navigation
+  - Efficient listener management with automatic cleanup
+  - Robust error handling for callback functions
+- **API Consistency**: All language functions properly exported and documented
+  - `getCurrentLanguage` and `watchLanguageChanges` added to main exports
+  - Consistent error handling and logging patterns across all functions
+
+### Documentation
+
+- **Complete Language Hooks Guide**: Production-ready documentation
+  - Simple current language detection for static components
+  - Language detection with supported languages fallback
+  - Real-time language change watching for reactive components
+- **Real-world Examples**: Production-ready component patterns
+  - Reactive components that update automatically on language changes
+  - Proper cleanup and unsubscribe patterns for memory management
+  - Translation integration examples with fallback strategies
+
+### TypeScript
+
+- **Enhanced Types**: Complete type definitions for all language features
+  - `LanguageChangeCallback` type for watch functions
+  - Full type safety for all language detection functions
+
+### Production Ready
+
+- **Stable API**: All language hooks thoroughly tested and ready for production
+- **Performance Optimized**: Efficient listener management with minimal overhead
+- **Memory Safe**: Automatic cleanup prevents memory leaks
+- **Error Resilient**: Comprehensive error handling for edge cases
+
 ## [1.4.0-beta.4] - 2024-12-19
 
 ### 🚀 Beta Release: Language Hooks for Dynamic Components
