@@ -10,6 +10,8 @@
 
 <sub>The 3 annoying things solved for vanilla JS/TS SPAs: <b>routing, navigation & SEO</b></sub>
 
+[📚 Documentation](https://love-on-the-route.matthieugravy.dev/fr) | [💻 GitHub](https://github.com/matthieuGravy/love-on-the-route)
+
 <!-- Sélecteur de langue -->
 
 **🌍 Language / Langue:**
