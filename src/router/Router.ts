@@ -109,6 +109,28 @@ export class Router {
   private setupNavigationListener(): void {
     document.body.addEventListener("click", (e) => {
       if (e.target instanceof HTMLAnchorElement) {
+        const href = e.target.getAttribute("href");
+        // Liste des protocoles externes à laisser passer
+        const externalProtocols = [
+          "http://",
+          "https://",
+          "mailto:",
+          "tel:",
+          "javascript:",
+          "ftp:",
+          "file:",
+        ];
+
+        // Si le lien est externe ou est une ancre dans la page
+        if (
+          href &&
+          (externalProtocols.some((protocol) => href.startsWith(protocol)) ||
+            href.startsWith("#"))
+        ) {
+          return;
+        }
+
+        // Pour les liens internes, on empêche le comportement par défaut et on utilise le router
         e.preventDefault();
         this.navigate(e.target.pathname);
       }

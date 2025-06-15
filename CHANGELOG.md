@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2024-12-19
+
+### Added
+
+- **Smart Link Handling**: Improved link management system
+  - External links (http://, https://, mailto:, tel:, etc.) now work normally
+  - Internal links continue to use the router for SPA navigation
+  - Support for all common external protocols (http, https, mailto, tel, javascript, ftp, file)
+  - Support for page anchors (#)
+
+### Enhanced
+
+- **Router Navigation**: Better link click handling
+  - Automatic detection of external vs internal links
+  - Preserved default browser behavior for external links
+  - Maintained SPA routing for internal navigation
+
 ## [1.4.0] - 2024-12-19
 
 ### 🎉 Major Release: Language Hooks for Dynamic Components
